@@ -1,0 +1,66 @@
+<RCC>
+    <qresource prefix="/LxMemo">
+        <file>icons/bold.png</file>
+        <file>icons/italic.png</file>
+        <file>icons/underline.png</file>
+        <file>icons/picture.png</file>
+        <file>icons/font.png</file>
+        <file>icons/close.png</file>
+        <file>icons/maximum.png</file>
+        <file>icons/minimum.png</file>
+        <file>icons/unfixed.png</file>
+        <file>icons/fixed.png</file>
+        <file>icons/color_board.png</file>
+        <file>icons/eglass-color.png</file>
+        <file>icons/add.png</file>
+        <file>icons/other.png</file>
+        <file>icons/memo.png</file>
+        <file>icons/desktop.qss</file>
+        <file>icons/close_eyes.png</file>
+        <file>icons/show.png</file>
+        <file>icons/note.png</file>
+        <file>icons/Exit.png</file>
+        <file>icons/list_format.png</file>
+        <file>icons/search.png</file>
+        <file>icons/symbol.png</file>
+        <file>icons/recovery.png</file>
+        <file>icons/strikethrough.png</file>
+        <file>icons/style.qss</file>
+        <file>icons/clear_recover.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/highlight.png</file>
+        <file>icons/selall.png</file>
+        <file>icons/copy.png</file>
+        <file>icons/paste.png</file>
+        <file>icons/export.png</file>
+        <file>icons/import.png</file>
+        <file>icons/recycle-fill.png</file>
+        <file>icons/brush.png</file>
+        <file>icons/down-arrow.png</file>
+        <file>icons/cut.png</file>
+        <file>icons/clear_format.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/mini-folder.png</file>
+        <file>icons/back.png</file>
+        <file>icons/memo_file.png</file>
+        <file>icons/forward.png</file>
+        <file>icons/icon_new folder.png</file>
+        <file>icons/message.png</file>
+        <file>icons/ok.png</file>
+        <file>icons/0x300a0a0.png</file>
+        <file>icons/red_mark.png</file>
+        <file>icons/rename.png</file>
+        <file>icons/back_home.png</file>
+        <file>icons/font_down.png</file>
+        <file>icons/font_up.png</file>
+        <file>icons/folder_blue.png</file>
+        <file>icons/memo_main.png</file>
+        <file>icons/memo_note.png</file>
+        <file>icons/folder-purple.png</file>
+    </qresource>
+    <qresource prefix="/texture">
+        <file>icons/texture/green.jpg</file>
+        <file>icons/texture/pink.jpg</file>
+        <file>icons/texture/race.jpg</file>
+    </qresource>
+</RCC>

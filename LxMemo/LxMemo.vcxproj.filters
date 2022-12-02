@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>qml;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{b04a56fb-562b-4698-bf9b-3d69530d3b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{e0237e09-45fc-4984-9801-950d854987fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="db">
+      <UniqueIdentifier>{17e1e009-66df-4836-b518-b646537ce4d8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="LxMemo.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+    <QtUic Include="LxMemo.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtMoc Include="LxMemo.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClCompile Include="LxMemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ListItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Memo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="db.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Searcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SizeSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorButton.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorSelector.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorLabel.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Folder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Meta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorChunk.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="lucencydialog.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\db\inc\sqlite3.c">
+      <Filter>thirdparty</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageShower.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderCreator.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSW.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageBox.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryResult.cpp">
+      <Filter>db</Filter>
+    </ClCompile>
+    <ClCompile Include="SqliteDB.cpp">
+      <Filter>db</Filter>
+    </ClCompile>
+    <ClCompile Include="DBFactory.cpp">
+      <Filter>db</Filter>
+    </ClCompile>
+    <ClCompile Include="NoFrameWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="notemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="notewall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="note.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphgoup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphiccanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="graphicgraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textgraph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphNote.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ListItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="MemoDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Searcher.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="EditTools.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SizeSelector.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ColorButton.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="ColorSelector.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="ColorLabel.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="ColorChunk.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="lucencydialog.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="MessageShower.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="FolderCreator.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="AnimationSW.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="MessageBox.h">
+      <Filter>Tools</Filter>
+    </QtMoc>
+    <QtMoc Include="NoFrameWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TitleBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="notemanager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="notewall.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="graph.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="graphiccanvas.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="graphicgraph.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Canvas.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3d\db\inc\sqlite3ext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Folder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Meta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\db\inc\sqlite3.h">
+      <Filter>thirdparty</Filter>
+    </ClInclude>
+    <ClInclude Include="db.h">
+      <Filter>db</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryResult.h">
+      <Filter>db</Filter>
+    </ClInclude>
+    <ClInclude Include="SqliteDB.h">
+      <Filter>db</Filter>
+    </ClInclude>
+    <ClInclude Include="DBFactory.h">
+      <Filter>db</Filter>
+    </ClInclude>
+    <ClInclude Include="note.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="graphgoup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="textgraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphNote.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MemoDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="lucencydialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="EditTools.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="SizeSelector.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ColorSelector.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="FolderCreator.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="MessageBox.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="NoFrameWidget.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TitleBar.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="notewall.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="graphiccanvas.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Canvas.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LxMemo.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\memo.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
