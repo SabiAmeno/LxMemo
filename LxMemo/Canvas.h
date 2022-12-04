@@ -4,14 +4,21 @@
 #include "NoFrameWidget.h"
 #include "ui_Canvas.h"
 
+class LxMemo;
 class Canvas : public NoFrameWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Canvas(QWidget *parent = nullptr);
-    ~Canvas();
+	Canvas(LxMemo* parent);
+	~Canvas();
 
+	void SetMeta(SharedGraph meta);
+private slots:
+	void onCanvasSave();
 private:
-    Ui::CanvasClass ui;
+	Ui::CanvasClass ui;
+
+	SharedGraph meta_{ nullptr };
+	LxMemo* lxmemo_{ nullptr };
 };

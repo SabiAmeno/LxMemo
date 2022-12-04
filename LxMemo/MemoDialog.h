@@ -18,73 +18,78 @@
 
 #include <condition_variable>
 
+class LxMemo;
 class MemoDialog : public NoFrameWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MemoDialog(SharedMemo memo, DB* db);
-    ~MemoDialog();
+	MemoDialog(LxMemo* parent);
+	~MemoDialog();
 
-    void SetMemo(SharedMemo memo);
-    uint32_t MemoId();
+	void SetMemo(SharedMemo memo);
+	uint32_t MemoId();
 
-    void SetTitle(const QString& title);
+	void SetTitle(const QString& title);
 signals:
-    void MemoUpdate(MemoDialog*);
-    void windowClosed();
+	void MemoUpdate(MemoDialog*);
+	void windowClosed();
 public slots:
-    void onWindowClosed();
+	void onWindowClosed();
 protected:
-    virtual void closeEvent(QCloseEvent* e) override;
-    virtual void keyPressEvent(QKeyEvent* e) override;
-    virtual bool eventFilter(QObject* watch, QEvent* event) override;
-    virtual void resizeEvent(QResizeEvent* event) override;
-    virtual void focusOutEvent(QFocusEvent* event) override;
+	virtual void closeEvent(QCloseEvent* e) override;
+	virtual void keyPressEvent(QKeyEvent* e) override;
+	virtual bool eventFilter(QObject* watch, QEvent* event) override;
+	virtual void resizeEvent(QResizeEvent* event) override;
+	virtual void focusOutEvent(QFocusEvent* event) override;
 private slots:
-    void onTextBold(bool checked);
-    void onTextItalic(bool checked);
-    void onTextUnderline(bool checked);
-    void onTextStrikeout(bool checked);
-    void onTextFontSize(const QString& s);
-    void onInsertImage();
-    void onSymbolChecked(bool checked = false);
-    void onMenuPop(const QPoint& pos);
-    void onSelectChanged();
-    void onTextSearch(bool check);
-    void onImageSelected(const QTextImageFormat& format);
+	void onTextBold(bool checked);
+	void onTextItalic(bool checked);
+	void onTextUnderline(bool checked);
+	void onTextStrikeout(bool checked);
+	void onTextFontSize(const QString& s);
+	void onInsertImage();
+	void onSymbolChecked(bool checked = false);
+	void onMenuPop(const QPoint& pos);
+	void onSelectChanged();
+	void onTextSearch(bool check);
+	void onImageSelected(const QTextImageFormat& format);
 
-    void onTextFontChanged(const QFont& font);
-    void onTextColorChanged(const QColor& color);
-    void onTextBkColorChanged(const QColor& color);
+	void onTextFontChanged(const QFont& font);
+	void onTextColorChanged(const QColor& color);
+	void onTextBkColorChanged(const QColor& color);
 
-    void onTextColorUp(bool);
-    void onTextColorDown(bool);
+	void onTextColorUp(bool);
+	void onTextColorDown(bool);
+
+	void onMemoSave();
 private:
-    void init();
-    void changeProp(auto cb);
-    void save();
-    void saveInThread();
+	void init();
+	void changeProp(auto cb);
+	void save();
+	void saveInThread();
 private:
-    Ui::MemoDialogClass ui;
-    DB* db_;
-    SharedMemo memo_;
+	Ui::MemoDialogClass ui;
 
-    QGraphicsOpacityEffect* effect_;
-    //QPropertyAnimation* opacity_animation_;
-    //QTextList* text_list_;
+	LxMemo* lxmemo_{ nullptr };
+	//DB* db_;
+	SharedMemo memo_;
 
-    Searcher* searcher_;
-    EditTools* edit_tool_;
-    //LucencyDialog* edit_dialog_;
-    LucencyDialog* size_selector_dialog_;
-    SizeSelector* size_selector_;
+	QGraphicsOpacityEffect* effect_;
+	//QPropertyAnimation* opacity_animation_;
+	//QTextList* text_list_;
 
-    std::atomic_bool keep_ = true;
-    std::atomic_bool save_right_ = false;
-    std::thread* thread_ = nullptr;
-    std::mutex mtx_;
-    std::condition_variable cv_;
+	Searcher* searcher_;
+	EditTools* edit_tool_;
+	//LucencyDialog* edit_dialog_;
+	LucencyDialog* size_selector_dialog_;
+	SizeSelector* size_selector_;
 
-    bool text_selected_ = false;
+	//std::atomic_bool keep_ = true;
+	//std::atomic_bool save_right_ = false;
+	//std::thread* thread_ = nullptr;
+	//std::mutex mtx_;
+	//std::condition_variable cv_;
+
+	bool text_selected_ = false;
 };

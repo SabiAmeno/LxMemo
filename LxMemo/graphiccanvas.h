@@ -7,55 +7,61 @@
 #include "ui_graphiccanvas.h"
 
 enum SizeDirect {
-    kDirectionNone,
-    kDirectionLeft,
-    kDirectionTop,
-    kDirectionRight,
-    kDirectionBottom,
-    kDirectionTopLeft,
-    kDirectionTopRight,
-    kDirectionBottomRight,
-    kDirectionBottomLeft,
+	kDirectionNone,
+	kDirectionLeft,
+	kDirectionTop,
+	kDirectionRight,
+	kDirectionBottom,
+	kDirectionTopLeft,
+	kDirectionTopRight,
+	kDirectionBottomRight,
+	kDirectionBottomLeft,
 };
 
 class GraphicCanvas : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit GraphicCanvas(QWidget *parent = nullptr);
-    ~GraphicCanvas();
+	explicit GraphicCanvas(QWidget* parent = nullptr);
+	~GraphicCanvas();
+
+	QByteArray SerializeTo();
+	void DeserializeFrom(QByteArray&& data);
+signals:
+	void CanvasChanged();
 private slots:
-    void onWordAdd();
-    void onPictureAdd();
-    void onDeleteGraph();
-    void onGraphAdd();
+	void onWordAdd();
+	void onPictureAdd();
+	void onDeleteGraph();
+	void onGraphAdd();
 
-    void onMoveUp();
-    void onMoveDown();
-    void onMoveTop();
-    void onMoveBottom();
+	void onMoveUp();
+	void onMoveDown();
+	void onMoveTop();
+	void onMoveBottom();
 
-    void onAddText();
-    void onAddPicture();
+	void onAddText();
+	void onAddPicture();
 protected:
-    virtual void paintEvent(QPaintEvent* e) override;
-    virtual void mousePressEvent(QMouseEvent* e) override;
-    virtual void mouseMoveEvent(QMouseEvent* e) override;
-    virtual void mouseReleaseEvent(QMouseEvent* e) override;
-    virtual void wheelEvent(QWheelEvent* e) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* e) override;
-    virtual void keyPressEvent(QKeyEvent* e) override;
-    virtual void keyReleaseEvent(QKeyEvent* e) override;
+	virtual void paintEvent(QPaintEvent* e) override;
+	virtual void mousePressEvent(QMouseEvent* e) override;
+	virtual void mouseMoveEvent(QMouseEvent* e) override;
+	virtual void mouseReleaseEvent(QMouseEvent* e) override;
+	virtual void wheelEvent(QWheelEvent* e) override;
+	virtual void mouseDoubleClickEvent(QMouseEvent* e) override;
+	virtual void keyPressEvent(QKeyEvent* e) override;
+	virtual void keyReleaseEvent(QKeyEvent* e) override;
+	virtual void closeEvent(QCloseEvent* e) override;
 private:
-    void changeCursor(const QRect& geo, const QPoint& p);
+	void changeCursor(const QRect& geo, const QPoint& p);
 private:
-    Ui::GraphicCanvas ui;
+	Ui::GraphicCanvas ui;
 
-    QPoint move_start_{};
-    GraphGroup* group_{nullptr};
-    Graph* selected_graph_{nullptr};
-    SizeDirect cursor_direction_{kDirectionNone};
+	QPoint move_start_{};
+	GraphGroup* group_{ nullptr };
+	Graph* selected_graph_{ nullptr };
+	SizeDirect cursor_direction_{ kDirectionNone };
 };
 
 #endif // GRAPHICCANVAS_H

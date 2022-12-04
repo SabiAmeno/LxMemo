@@ -3,11 +3,16 @@
 class GraphNote : public Meta
 {
 public:
-    GraphNote() = default;
-    GraphNote(uint32_t id);
+	GraphNote() = default;
+	GraphNote(uint32_t id);
 
-    virtual void paint(QPainter& painter, const QRect& rect) const;
-    virtual size_t type();
+	virtual void paint(QPainter& painter, const QRect& rect) const;
+	virtual size_t type();
+
+	void SetData(const QByteArray& data);
+	QByteArray Data();
+private:
+	QByteArray data_{};
 };
 
 using SharedGraph = QSharedPointer<GraphNote>;

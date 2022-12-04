@@ -11,27 +11,27 @@
 class TextGraph : public Graph
 {
 public:
-    explicit TextGraph(GraphicCanvas* parent, const QString& text = "");
+	explicit TextGraph(GraphicCanvas* parent, const QString& text = "");
+	~TextGraph();
 
-    void SetText(const QString& text);
+	void SetText(const QString& text);
 
-    virtual QRect Geometry() override;
-    virtual void MouseClick(const QPoint& pos) override;
-    virtual void MouseDoubleClick(const QPoint& ) override;
-    virtual void SerializeTo(QDataStream& stream) override;
-    virtual void DeserializeFrom(QDataStream& stream) override;
+	virtual QRect Geometry() override;
+	virtual void MouseClick(const QPoint& pos) override;
+	virtual void MouseDoubleClick(const QPoint&) override;
+	virtual void SerializeTo(QDataStream& stream) override;
+	virtual void DeserializeFrom(QDataStream& stream) override;
 protected:
-    virtual void draw(QPainter& p) override;
-    virtual GraphType type() override;
+	virtual void draw(QPainter& p) override;
+	virtual GraphType type() override;
 private:
-    void updateSize();
+	void updateSize();
 private:
-    QString text_{};
-    QFont font_{};
+	QString text_{};
+	QFont font_{};
 
-    QTextEdit* edit_{nullptr};
-//    TextCursor* cursor_{nullptr};
+	QTextEdit* edit_{ nullptr };
+	//    TextCursor* cursor_{nullptr};
 };
-
 
 #endif // TEXTGRAPH_H

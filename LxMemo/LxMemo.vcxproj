@@ -20,12 +20,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
@@ -126,6 +126,7 @@
     <ClCompile Include="MessageBox.cpp" />
     <ClCompile Include="MessageShower.cpp" />
     <ClCompile Include="Meta.cpp" />
+    <ClCompile Include="MetaSaver.cpp" />
     <ClCompile Include="NoFrameWidget.cpp" />
     <ClCompile Include="note.cpp" />
     <ClCompile Include="notemanager.cpp" />
@@ -171,6 +172,7 @@
     <QtMoc Include="graphiccanvas.h" />
     <QtMoc Include="graphicgraph.h" />
     <ClInclude Include="GraphNote.h" />
+    <ClInclude Include="MetaSaver.h" />
     <ClInclude Include="note.h" />
     <ClInclude Include="QueryResult.h" />
     <ClInclude Include="SqliteDB.h" />
