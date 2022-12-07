@@ -20,8 +20,8 @@ EditTools::EditTools(QTextEdit* edit, QWidget* parent)
     connect(ui.font_italic_btn, &QToolButton::clicked, this, &EditTools::changeItalic);
     connect(ui.font_strikeout_btn, &QToolButton::clicked, this, &EditTools::changeStrikeout);
     connect(ui.font_underline_btn, &QToolButton::clicked, this, &EditTools::changeUnderline);
-    connect(ui.font_color_btn, &ColorButton::colorChnaged, this, &EditTools::changeFontColor);
-    connect(ui.font_bkcolor_btn, &ColorButton::colorChnaged, this, &EditTools::changeBackgroundColor);
+    connect(ui.font_color_btn, &ColorButton::colorChanged, this, &EditTools::changeFontColor);
+    connect(ui.font_bkcolor_btn, &ColorButton::colorChanged, this, &EditTools::changeBackgroundColor);
     connect(ui.font_up_btn, &QToolButton::clicked, this, &EditTools::changeFontUp);
     connect(ui.font_down_btn, &QToolButton::clicked, this, &EditTools::changeFontDown);
     //connect(ui.comboBox, &QComboBox::currentTextChanged, this, &EditTools::changeFontSize);

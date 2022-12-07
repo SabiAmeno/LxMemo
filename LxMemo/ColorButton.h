@@ -18,7 +18,7 @@ public:
 
     void SetColorFace(FaceColor* fc);
 signals:
-    void colorChnaged(const QColor&);
+    void colorChanged(const QColor&);
 private slots:
     void onColorChanged(const QColor&);
 protected:

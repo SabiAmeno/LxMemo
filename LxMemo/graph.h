@@ -24,6 +24,8 @@ public:
 
     virtual void SetSize(const QSize& size);
     virtual void SetCoord(const QPoint& pos);
+    virtual void SetColor(const QColor& color);
+
     void SetSelected(bool sel);
     bool Selected();
 
@@ -48,6 +50,8 @@ signals:
 protected:
     QSize size_{};
     QPoint pos_{};
+    QColor color_{Qt::black};
+
     bool selected_{false};
 
     GraphicCanvas* canvas_{nullptr};

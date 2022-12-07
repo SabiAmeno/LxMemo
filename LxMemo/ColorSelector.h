@@ -42,7 +42,7 @@ class ColorGrid : public FaceColor
 {
     Q_OBJECT
 public:
-    ColorGrid(QWidget* parent)
+    ColorGrid(QWidget* parent = nullptr)
         : FaceColor(parent)
     {}
 

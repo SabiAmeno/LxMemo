@@ -28,6 +28,11 @@ signals:
     void NoteDoubleClicked(const QPoint&, NoteWidget*);
     //右键点击,如果没有选中note，则NoteWidget为空
     void CustomClicked(const QPoint&, NoteWidget*);
+
+    void MemoAddTriggered();
+    void ImageAddTriggered();
+    void FolderAddTriggered();
+    void MemoImportTriggered();
 public slots:
     void onNoteAdded();
 protected:
@@ -40,6 +45,7 @@ protected:
     virtual void wheelEvent(QWheelEvent* e) override;
 private slots:
     void on_verticalScrollBar_valueChanged(int value);
+    void onAdded();
 private:
     void drawFrame(QPainter& painter, const QRect& geo, const QColor& color);
     void changeScrollRange();

@@ -3,7 +3,9 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
+#include <QMenu>
 #include "note.h"
+#include "util.h"
 
 NoteWall::NoteWall(QWidget *parent) :
     QWidget(parent),
@@ -14,6 +16,8 @@ NoteWall::NoteWall(QWidget *parent) :
     background_.load(":/texture/icons/texture/race.jpg");
     nm_ = new NoteManager(this);
     setMouseTracking(true);
+
+    connect(ui->toolButton, &QToolButton::clicked, this, &NoteWall::onAdded);
 }
 
 NoteWall::~NoteWall()
@@ -125,6 +129,30 @@ void NoteWall::paintEvent(QPaintEvent *e)
     }
 
     QWidget::paintEvent(e);
+}
+
+void NoteWall::onAdded()
+{
+    QMenu menu;
+    auto add_memo = menu.addAction(QIcon(":/LxMemo/icons/add.png"), "Add Memo");
+    auto add_img = menu.addAction(QIcon(":/LxMemo/icons/graph.png"), "Add Image");
+    auto add_folder = menu.addAction(QIcon(":/LxMemo/icons/icon_new folder.png"), "Add Folder");
+    auto import_memo = menu.addAction(QIcon(":/LxMemo/icons/file-import.png"), "Import Memo");
+    //menu.setFixedWidth(100);
+   
+    //menu->show();
+    //QRect rc (mapToGlobal(ui->toolButton->pos()), QSize(25, 25));
+
+    //QRect start(rc.adjusted(0, 0, 20, 0));
+    //QRect end = start.adjusted(0, 160, 0, 0);
+    //StartGeometryAnimation(menu, start, end);
+    connect(add_memo, &QAction::triggered, this, &NoteWall::MemoAddTriggered);
+    connect(add_img, &QAction::triggered, this, &NoteWall::ImageAddTriggered);
+    connect(add_folder, &QAction::triggered, this, &NoteWall::FolderAddTriggered);
+    connect(import_memo, &QAction::triggered, this, &NoteWall::MemoImportTriggered);
+
+    //auto sz = ui->toolButton->size();
+    menu.exec(mapToGlobal(ui->toolButton->pos() - QPoint(30, 80)));
 }
 
 void NoteWall::drawFrame(QPainter &painter, const QRect &geo, const QColor &color)

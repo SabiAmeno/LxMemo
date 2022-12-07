@@ -7,6 +7,9 @@
 ColorButton::ColorButton(QWidget* parent)
     : QToolButton(parent)
 {
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setPopupMode(QToolButton::MenuButtonPopup);
+
     QMenu* menu = new QMenu(this);
     /*QWidgetAction* wa = new QWidgetAction(this);
 
@@ -45,7 +48,7 @@ void ColorButton::onColorChanged(const QColor& color)
     
     update();
 
-    emit colorChnaged(color);
+    emit colorChanged(color);
 }
 
 

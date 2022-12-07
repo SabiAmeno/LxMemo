@@ -57,6 +57,9 @@
         <file>icons/memo_main.png</file>
         <file>icons/memo_note.png</file>
         <file>icons/folder-purple.png</file>
+        <file>icons/bird.png</file>
+        <file>icons/graph.png</file>
+        <file>icons/file-import.png</file>
     </qresource>
     <qresource prefix="/texture">
         <file>icons/texture/green.jpg</file>

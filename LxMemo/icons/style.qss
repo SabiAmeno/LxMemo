@@ -18,19 +18,18 @@ QMenuBar::item:pressed {
     background: #888888;
 }
 
-QMenu {
-    background-color: rgb(235,229,209); /* sets background of the menu */
+/* QMenu {
+    background-color: rgb(245, 242, 234); 
 }
 
 QMenu::item {
-    /* sets background of menu item. set this to something non-transparent
-        if you want menu color and menu item color to be different */
     background-color: transparent;
+    max-width: 100px;
 }
 
-QMenu::item:selected { /* when user selects item using mouse or keyboard */
+QMenu::item:selected {
     background-color: #9b6a3a;
-}
+} */
 
 QScrollBar:vertical {
     border: 0px solid grey;

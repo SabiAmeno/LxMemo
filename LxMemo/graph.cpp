@@ -27,6 +27,11 @@ void Graph::SetCoord(const QPoint &pos)
     pos_ = pos;
 }
 
+void Graph::SetColor(const QColor& color)
+{
+    color_ = color;
+}
+
 void Graph::SetSelected(bool sel)
 {
     selected_ = sel;
@@ -57,12 +62,14 @@ void Graph::SerializeTo(QDataStream &stream)
     stream << type();
     stream << pos_;
     stream << size_;
+    stream << color_;
 }
 
 void Graph::DeserializeFrom(QDataStream &stream)
 {
     stream >> pos_;
     stream >> size_;
+    stream >> color_;
 }
 
 void Graph::draw(QPainter &p)
@@ -78,10 +85,10 @@ void Graph::draw(QPainter &p)
         auto bottom_right_rect = QRect(geo.bottomRight() - QPoint(3, 3), QSize(6,6));
         auto bottom_left_rect = QRect(geo.bottomLeft() - QPoint(3,3), QSize(6,6));
 
-        p.fillRect(top_left_rect, Qt::gray);
-        p.fillRect(top_right_rect, Qt::gray);
-        p.fillRect(bottom_left_rect, Qt::gray);
-        p.fillRect(bottom_right_rect, Qt::gray);
+        p.drawRect(top_left_rect);
+        p.drawRect(top_right_rect);
+        p.drawRect(bottom_left_rect);
+        p.drawRect(bottom_right_rect);
     }
     p.restore();
 }

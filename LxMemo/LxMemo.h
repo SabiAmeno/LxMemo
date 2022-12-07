@@ -56,10 +56,10 @@ public:
 public slots:
 	//void onWindowClosed();
 private slots:
-	void onEditMemo(const QPoint& pos, NoteWidget* nw);
+	void onMemoDisplay(const QPoint& pos, NoteWidget* nw);
 	void onRecycleItemEdit(const QModelIndex&);
-	void onDeleteMemo(const QPoint& pos, NoteWidget* nw);
 	void onItemEdit(const QPoint& pos, NoteWidget* nw);
+	void onMemoEdit(const QPoint& pos, NoteWidget* nw);
 	void onUpdateMemo(MemoDialog* mdlg);
 	void onMemoClosed();
 
@@ -69,6 +69,7 @@ private slots:
 
 	void onAddMemo();
 	void onAddGraph();
+	void onImportMemo();
 
 	void onEditFinished(uint32_t id, const QString& last, const QString& curr);
 protected:
@@ -77,7 +78,6 @@ protected:
 private:
 	void initDB();
 	void initRecycleMemo();
-	void editItem(const QPoint& pos, NoteWidget* nw);
 	void editRecycleItem(const QModelIndex& index);
 	void addMemo(SharedMeta memo);
 	void queryData(const Path& path);

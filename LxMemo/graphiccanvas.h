@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "graphgoup.h"
 #include "GraphNote.h"
+#include "TextStyleWidget.h"
 #include "ui_graphiccanvas.h"
 
 enum SizeDirect {
@@ -28,14 +29,16 @@ public:
 
 	QByteArray SerializeTo();
 	void DeserializeFrom(QByteArray&& data);
-signals:
-	void CanvasChanged();
-private slots:
+public slots:
 	void onWordAdd();
 	void onPictureAdd();
-	void onDeleteGraph();
 	void onGraphAdd();
+signals:
+	void CanvasChanged();
+	void GraphClicked(Graph*);
+private slots:
 
+	void onDeleteGraph();
 	void onMoveUp();
 	void onMoveDown();
 	void onMoveTop();

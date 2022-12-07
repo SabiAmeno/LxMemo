@@ -30,7 +30,7 @@ LxMemo::LxMemo(QWidget* parent)
 	ui.setupUi(this);
 
 	setWindowIcon(QIcon(":/LxMemo/icons/memo.png"));
-	setStyleSheet("background-color:transparent;");
+	//setStyleSheet("background-color:transparent;");
 	//setStyleSheet("background-color:#55000000;");
 	ui.widget->SetTitle(tr("LxMemo"));
 	ui.note_wall->SetBackground(Qt::black);
@@ -50,8 +50,13 @@ LxMemo::LxMemo(QWidget* parent)
 	 connect(ui.listWidget, SIGNAL(clicked(const QModelIndex&)), this, SLOT(onItemEdit(const QModelIndex&)));*/
 
 	connect(ui.note_wall, &NoteWall::NoteClicked, this, &LxMemo::onItemEdit);
-	connect(ui.note_wall, &NoteWall::NoteDoubleClicked, this, &LxMemo::onEditMemo);
-	connect(ui.note_wall, &NoteWall::CustomClicked, this, &LxMemo::onDeleteMemo);
+	connect(ui.note_wall, &NoteWall::NoteDoubleClicked, this, &LxMemo::onMemoDisplay);
+	connect(ui.note_wall, &NoteWall::CustomClicked, this, &LxMemo::onMemoEdit);
+
+	connect(ui.note_wall, &NoteWall::MemoAddTriggered, this, &LxMemo::onAddMemo);
+	connect(ui.note_wall, &NoteWall::ImageAddTriggered, this, &LxMemo::onAddGraph);
+	connect(ui.note_wall, &NoteWall::FolderAddTriggered, this, &LxMemo::onAddFolder);
+	connect(ui.note_wall, &NoteWall::MemoImportTriggered, this, &LxMemo::onImportMemo);
 
 	connect(ui.button_back, &QToolButton::clicked, this, &LxMemo::onBack);
 	connect(ui.button_forward, &QToolButton::clicked, this, &LxMemo::onForward);
@@ -201,7 +206,7 @@ void LxMemo::addMemo(SharedMeta memo)
 	dir.mkdir(tr("%1").arg(QString::number(memo->Id())));
 }
 
-void LxMemo::editItem(const QPoint& pos, NoteWidget* nw)
+void LxMemo::onMemoEdit(const QPoint& pos, NoteWidget* nw)
 {
 	if (!nw)
 		return;
@@ -295,7 +300,7 @@ void LxMemo::editItem(const QPoint& pos, NoteWidget* nw)
 	std::function<void(bool)> showfn = [this, id, pos, nw](bool)
 	{
 		if (!opend_dialog_.contains(nw))
-			onEditMemo(pos, nw);
+			onMemoDisplay(pos, nw);
 		else
 		{
 			auto dlg = opend_dialog_.value(nw);
@@ -365,6 +370,7 @@ void LxMemo::editItem(const QPoint& pos, NoteWidget* nw)
 
 	connect(delAction, &QAction::triggered, this, delCB);
 
+	menu.setFixedWidth(100);
 	menu.exec(mapToGlobal(pos));
 }
 
@@ -433,80 +439,33 @@ void LxMemo::onRecycleItemEdit(const QModelIndex& index)
 	*/
 }
 
-void LxMemo::onDeleteMemo(const QPoint& pos, NoteWidget* nw)
+void LxMemo::onImportMemo()
 {
-	if (nw) {
-		editItem(pos, nw);
-	}
-	else {
-		QMenu menu;
-		auto addAct = menu.addAction(QIcon(":/LxMemo/icons/add.png"), "New");
-		auto addGraph = menu.addAction(QIcon(), "New Graph");
-		auto importAction = menu.addAction(QIcon(":/LxMemo/icons/import.png"), tr("Import"));
-		auto addFolderAction = menu.addAction(QIcon(":/LxMemo/icons/mini-folder.png"), "New Folder");
-		//auto pastAction = menu.addAction(QIcon(":/LxMemo/icons/paste.png"), tr("Paste Memo"));
+	auto htmlFile = QFileDialog::getOpenFileName(nullptr, tr("Open"), QString(), "*.html;*.txt");
+	if (htmlFile.isEmpty())
+		return;
 
-		//if (!cutt_meta_)
-			//pastAction->setEnabled(false);
+	QFile f(htmlFile);
+	f.open(QIODevice::ReadOnly);
+	if (f.isOpen()) {
+		auto content = f.readAll();
+		f.close();
 
-		std::function<void(bool)> importHtml = [this](bool)
-		{
-			auto htmlFile = QFileDialog::getOpenFileName(nullptr, tr("Open"), QString(), "*.html;*.txt");
-			if (htmlFile.isEmpty())
-				return;
+		auto memo = SharedMemo(new Memo());
+		memo->SetHtml(content);
+		addMemo(memo);
 
-			QFile f(htmlFile);
-			f.open(QIODevice::ReadOnly);
-			if (f.isOpen()) {
-				auto content = f.readAll();
-				f.close();
+		auto content_base = QString(content).toLocal8Bit().toBase64();
+		auto snap = memo->Snapshot().toLocal8Bit().toBase64();
+		std::unique_ptr<char> data(new char[content_base.length() + snap.length() + 256] { 0 });
+		int r = sprintf(data.get(), R"(update Memo set DATA="%s", SNAPSHOT="%s" where ID=%u;)",
+			content_base.data(),
+			snap.data(),
+			memo->Id());
 
-				auto memo = SharedMemo(new Memo());
-				memo->SetHtml(content);
-				addMemo(memo);
-
-				auto content_base = QString(content).toLocal8Bit().toBase64();
-				auto snap = memo->Snapshot().toLocal8Bit().toBase64();
-				std::unique_ptr<char> data(new char[content_base.length() + snap.length() + 256] { 0 });
-				int r = sprintf(data.get(), R"(update Memo set DATA="%s", SNAPSHOT="%s" where ID=%u;)",
-					content_base.data(),
-					snap.data(),
-					memo->Id());
-
-				//ExecSQL(db_, data.get());
-				db_->Query(data.get());
-				//onUpdateMemo(memo->Id());
-			}
-		};
-		/*
-				std::function<void(bool)> pasteMemo = [this](bool)
-				{
-					if (cutt_meta_) {
-						auto sql = tr("update Memo set PPATH=\"%1\" where ID=%2;")
-							.arg(path_.path(), QString::number(cutt_meta_->Id()));
-						//bool ret = ExecSQL(db_, sql.toLocal8Bit().data());
-						auto ret = db_->Query(sql.toLocal8Bit().data());
-						if (ret) {
-							///先删除，后添加
-							if (cutt_item_.isValid()) {
-								ui.listWidget->takeItem(cutt_item_.row());
-								cutt_item_ = QModelIndex();
-							}
-
-							loadMeta(cutt_meta_, "MEMO");
-						}
-
-						cutt_meta_ = nullptr;
-					}
-				};
-		*/
-		connect(addAct, &QAction::triggered, this, &LxMemo::onAddMemo);
-		connect(addGraph, &QAction::triggered, this, &LxMemo::onAddGraph);
-		connect(importAction, &QAction::triggered, this, importHtml);
-		connect(addFolderAction, &QAction::triggered, this, &LxMemo::onAddFolder);
-		//connect(pastAction, &QAction::triggered, this, pasteMemo);
-
-		menu.exec(mapToGlobal(pos));
+		//ExecSQL(db_, data.get());
+		db_->Query(data.get());
+		//onUpdateMemo(memo->Id());
 	}
 }
 
@@ -526,7 +485,7 @@ void LxMemo::onItemEdit(const QPoint& pos, NoteWidget* nw)
 			auto r = QRect(tR - QPoint(30, -8), tR - QPoint(9, -21));
 			if (r.contains(pos)) {
 				//auto pos = ui.listWidget->mapToGlobal(r.bottomLeft());
-				editItem(pos, nw);
+				onMemoEdit(pos, nw);
 			}
 		}
 	}
@@ -818,7 +777,7 @@ MemoDialog* LxMemo::showMemo(SharedMemo memo)
 	return dlg;
 }
 
-void LxMemo::onEditMemo(const QPoint& pos, NoteWidget* nw)
+void LxMemo::onMemoDisplay(const QPoint& pos, NoteWidget* nw)
 {
 	if (!nw)
 		return;
@@ -855,8 +814,9 @@ void LxMemo::onEditMemo(const QPoint& pos, NoteWidget* nw)
 				//opend_dialog_.insert(nw, showMemo(memo));
 			}
 		}
-		Canvas* canvas = new Canvas(this);
+		Canvas* canvas = new Canvas();
 		canvas->SetMeta(gn);
+		canvas->SetMetaSaver(saver_);
 		canvas->setAttribute(Qt::WA_DeleteOnClose);
 		canvas->show();
 	}

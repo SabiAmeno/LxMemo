@@ -33,7 +33,7 @@ private:
     void drawContent(QPainter&);
 
 private:
-    QSize size_{94, 92};
+    QSize size_{94, 94};
     QPoint posi_{0,0};
     QColor background_{Qt::darkGreen};
 

@@ -7,6 +7,17 @@
 #include <QTextEdit>
 #include <QTextObjectInterface>
 
+struct TextStyle
+{
+	QFont font_{ "Microsoft YaHei UI", 10 };
+	QColor color_{ Qt::black };
+	QColor bk_color_{ Qt::white };
+	int border_style_{ 0 };
+
+	friend QDataStream& operator<<(QDataStream& out, const TextStyle& style);
+	friend QDataStream& operator>>(QDataStream& out, TextStyle& style);
+};
+
 //class TextCursor;
 class TextGraph : public Graph
 {
@@ -15,6 +26,8 @@ public:
 	~TextGraph();
 
 	void SetText(const QString& text);
+	TextStyle GetTextStyle() const;
+	void SetTextStyle(const TextStyle& style);
 
 	virtual QRect Geometry() override;
 	virtual void MouseClick(const QPoint& pos) override;
@@ -28,7 +41,8 @@ private:
 	void updateSize();
 private:
 	QString text_{};
-	QFont font_{};
+	//QFont font_{};
+	TextStyle text_style_{};
 
 	QTextEdit* edit_{ nullptr };
 	//    TextCursor* cursor_{nullptr};

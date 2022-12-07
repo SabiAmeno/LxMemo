@@ -157,6 +157,12 @@
     <ClCompile Include="MetaSaver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dockwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextStyleWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ListItem.h">
@@ -223,6 +229,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Canvas.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="dockwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TextStyleWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -311,6 +323,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Canvas.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="dockwindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TextStyleWidget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -110,6 +110,7 @@
     <ClCompile Include="ColorSelector.cpp" />
     <ClCompile Include="db.cpp" />
     <ClCompile Include="DBFactory.cpp" />
+    <ClCompile Include="dockwindow.cpp" />
     <ClCompile Include="EditTools.cpp" />
     <ClCompile Include="ColorButton.cpp" />
     <ClCompile Include="Folder.cpp" />
@@ -136,11 +137,13 @@
     <ClCompile Include="SizeSelector.cpp" />
     <ClCompile Include="SqliteDB.cpp" />
     <ClCompile Include="textgraph.cpp" />
+    <ClCompile Include="TextStyleWidget.cpp" />
     <ClCompile Include="TitleBar.cpp" />
     <ClCompile Include="util.cpp" />
     <QtRcc Include="LxMemo.qrc" />
     <QtUic Include="Canvas.ui" />
     <QtUic Include="ColorSelector.ui" />
+    <QtUic Include="dockwindow.ui" />
     <QtUic Include="EditTools.ui" />
     <QtUic Include="FolderCreator.ui" />
     <QtUic Include="graphiccanvas.ui" />
@@ -154,6 +157,7 @@
     <QtUic Include="NoFrameWidget.ui" />
     <QtUic Include="notewall.ui" />
     <QtUic Include="SizeSelector.ui" />
+    <QtUic Include="TextStyleWidget.ui" />
     <QtUic Include="TitleBar.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +172,7 @@
     <QtMoc Include="notemanager.h" />
     <QtMoc Include="notewall.h" />
     <QtMoc Include="graph.h" />
+    <QtMoc Include="dockwindow.h" />
     <ClInclude Include="graphgoup.h" />
     <QtMoc Include="graphiccanvas.h" />
     <QtMoc Include="graphicgraph.h" />
@@ -178,6 +183,7 @@
     <ClInclude Include="SqliteDB.h" />
     <QtMoc Include="TitleBar.h" />
     <ClInclude Include="textgraph.h" />
+    <QtMoc Include="TextStyleWidget.h" />
     <ClInclude Include="util.h" />
     <QtMoc Include="SizeSelector.h" />
     <QtMoc Include="Searcher.h" />

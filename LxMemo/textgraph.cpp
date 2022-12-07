@@ -6,11 +6,11 @@
 #include "graphiccanvas.h"
 
 TextGraph::TextGraph(GraphicCanvas* parent, const QString& text)
-	: Graph{ parent },
-	font_{ "Microsoft YaHei UI", 10 }
+	: Graph{ parent }
 {
 	edit_ = new QTextEdit(parent);
 	edit_->resize(150, 150);
+	edit_->setFont(text_style_.font_);
 	edit_->hide();
 
 	SetText(text);
@@ -30,6 +30,18 @@ void TextGraph::SetText(const QString& text)
 	edit_->setText(text);
 
 	//    updateSize();
+}
+
+TextStyle TextGraph::GetTextStyle() const
+{
+	return text_style_;
+}
+
+void TextGraph::SetTextStyle(const TextStyle& style)
+{
+	text_style_ = style;
+
+	canvas_->update();
 }
 
 QRect TextGraph::Geometry()
@@ -63,7 +75,8 @@ void TextGraph::SerializeTo(QDataStream& stream)
 {
 	Graph::SerializeTo(stream);
 
-	stream << font_;
+	//stream << font_;
+	stream << text_style_;
 	stream << text_;
 }
 
@@ -71,7 +84,8 @@ void TextGraph::DeserializeFrom(QDataStream& stream)
 {
 	Graph::DeserializeFrom(stream);
 
-	stream >> font_;
+	//stream >> font_;
+	stream >> text_style_;
 	stream >> text_;
 
 	SetText(text_);
@@ -86,10 +100,12 @@ void TextGraph::draw(QPainter& p)
 
 		auto geo = Geometry();
 		geo.adjust(3, 3, -3, -3);
-		p.setFont(font_);
+		p.setFont(text_style_.font_);
 
+		p.fillRect(geo, text_style_.bk_color_);
 		QTextOption opt;
 		opt.setWrapMode(QTextOption::WordWrap);
+		p.setPen(text_style_.color_);
 		p.drawText(geo, text_, opt);
 		//    p.translate(pos_);
 		//    doc_->documentLayout()->setPaintDevice(p.device());
@@ -108,7 +124,27 @@ GraphType TextGraph::type()
 
 void TextGraph::updateSize()
 {
-	QFontMetrics mtc(font_);
+	QFontMetrics mtc(text_style_.font_);
 	size_ = mtc.size(Qt::TextExpandTabs, text_);
 	//    doc_->setTextWidth(size_.width());
+}
+
+QDataStream& operator<<(QDataStream& out, const TextStyle& style)
+{
+	out << style.font_;
+	out << style.color_;
+	out << style.bk_color_;
+	out << style.border_style_;
+
+	return out;
+}
+
+QDataStream& operator>>(QDataStream& out, TextStyle& style)
+{
+	out >> style.font_;
+	out >> style.color_;
+	out >> style.bk_color_;
+	out >> style.border_style_;
+
+	return out;
 }
