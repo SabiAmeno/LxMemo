@@ -60,6 +60,13 @@
         <file>icons/bird.png</file>
         <file>icons/graph.png</file>
         <file>icons/file-import.png</file>
+        <file>icons/max-min.png</file>
+        <file>icons/min-max.png</file>
+        <file>icons/folder-cmy.png</file>
+        <file>icons/ic-folder.png</file>
+        <file>icons/html.png</file>
+        <file>icons/markdown.png</file>
+        <file>icons/text.png</file>
     </qresource>
     <qresource prefix="/texture">
         <file>icons/texture/green.jpg</file>

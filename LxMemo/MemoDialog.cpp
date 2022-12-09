@@ -35,6 +35,8 @@ MemoDialog::MemoDialog(LxMemo* parent)
 
 	edit_tool_->hide();
 
+	save_timer_.setInterval(500);
+
 	connect(edit_tool_, &EditTools::changeBold, this, &MemoDialog::onTextBold);
 	connect(edit_tool_, &EditTools::changeItalic, this, &MemoDialog::onTextItalic);
 	connect(edit_tool_, &EditTools::changeUnderline, this, &MemoDialog::onTextUnderline);
@@ -51,7 +53,8 @@ MemoDialog::MemoDialog(LxMemo* parent)
 	connect(ui.widget, &TitleBar::minimumButtonClicked, this, [this] {showMinimized(); });
 	connect(ui.widget, &TitleBar::positionChanged, this, [this](const QPoint& diff) {move(pos() + diff); });
 
-	connect(ui.textEdit->document(), &QTextDocument::contentsChanged, this, &MemoDialog::onMemoSave);
+	//connect(ui.textEdit->document(), &QTextDocument::contentsChanged, this, &MemoDialog::onMemoSave);
+	connect(&save_timer_, &QTimer::timeout, this, &MemoDialog::onMemoSave);
 
 	size_selector_dialog_ = new LucencyDialog(this);
 	size_selector_ = new SizeSelector(size_selector_dialog_);
@@ -65,6 +68,8 @@ MemoDialog::MemoDialog(LxMemo* parent)
 	connect(size_selector_, &SizeSelector::SelectFinished, this, &MemoDialog::onImageSelected);
 
 	init();
+
+	save_timer_.start();
 }
 
 MemoDialog::~MemoDialog()
@@ -79,7 +84,10 @@ void MemoDialog::SetMemo(SharedMemo memo)
 	ui.widget->SetIcon(":/LxMemo/icons/memo_note.png");
 	SetPureStyle(memo->GetColor().name(QColor::HexArgb));
 
-	ui.textEdit->setHtml(memo_->GetHtml());
+	if (MemoType::kMemoHtml == memo_->GetMemoType())
+		ui.textEdit->setHtml(memo_->GetRawData());
+	else
+		ui.textEdit->setPlainText(memo_->GetRawData());
 }
 
 uint32_t MemoDialog::MemoId()
@@ -96,6 +104,7 @@ void MemoDialog::SetTitle(const QString& title)
 
 void MemoDialog::onWindowClosed()
 {
+	save_timer_.stop();
 	searcher_->ResetSearcher();
 	edit_tool_->close();
 
@@ -161,21 +170,31 @@ bool MemoDialog::eventFilter(QObject* watch, QEvent* event)
 {
 	switch (event->type())
 	{
-		//case QEvent::Wheel:
-		//{
-		//    auto e = (QWheelEvent*)event;
-		//    auto ctrl = e->modifiers();
-		//    if (Qt::ControlModifier == ctrl) {
-		//        auto delta = e->pixelDelta();
-		//        if (delta.x() > 0) {
-		//            ui.textEdit->zoomIn(2);
-		//        }
-		//        else {
-		//            ui.textEdit->zoomOut(2);
-		//        }
-		//    }
-		//    break;
-		//}
+		case QEvent::Wheel:
+		{
+		    auto e = (QWheelEvent*)event;
+		    auto ctrl = e->modifiers();
+
+			QPoint numPixels = e->pixelDelta();
+			QPoint numDegrees = e->angleDelta() / 8;
+
+			if (Qt::ControlModifier == ctrl) {
+				if (!numPixels.isNull()) {
+					if (numPixels.y() > 0)
+						ui.textEdit->zoomIn(2);
+					else
+						ui.textEdit->zoomOut(2);
+				}
+				else if (!numDegrees.isNull()) {
+					QPoint numSteps = numDegrees / 15 * 40;
+					if (numSteps.y() > 0)
+						ui.textEdit->zoomIn(2);
+					else
+						ui.textEdit->zoomOut(2);
+				}
+			}
+		    break;
+		}
 	case QEvent::MouseButtonPress:
 	{
 		edit_tool_->hide();
@@ -511,15 +530,23 @@ void MemoDialog::onMemoSave()
 		ui.textEdit->document()->setModified(false);
 
 		auto time = QDateTime::currentDateTime().toString();
-		auto html = ui.textEdit->document()->toHtml();
+		QString contents;
 
-		memo_->SetHtml(html);
+		if (kMemoHtml == memo_->GetMemoType()) {
+			contents = ui.textEdit->document()->toHtml();
+		}
+		else {
+			contents = ui.textEdit->document()->toPlainText();
+		}
+
+		memo_->SetRawData(contents);
+
 		memo_->SetTime(time);
 
 		Event* event = new Event();
 		event->meta = memo_;
 		event->snapshot = memo_->Snapshot().toLocal8Bit().toBase64();
-		event->contents = html.toLocal8Bit().toBase64();
+		event->contents = contents.toLocal8Bit().toBase64();
 		event->time = time;
 
 		lxmemo_->saver_->Push(event);

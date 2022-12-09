@@ -28,8 +28,6 @@ void TextGraph::SetText(const QString& text)
 {
 	text_ = text;
 	edit_->setText(text);
-
-	//    updateSize();
 }
 
 TextStyle TextGraph::GetTextStyle() const
@@ -57,17 +55,16 @@ void TextGraph::MouseClick(const QPoint& pos)
 	SetSelected(Geometry().contains(pos));
 	if (edit_->isVisible()) {
 		text_ = edit_->toPlainText();
+		edit_->releaseKeyboard();
 		edit_->hide();
 	}
-	//    updateSize();
 }
 
 void TextGraph::MouseDoubleClick(const QPoint& pos)
 {
-	//    text_cursor.setPosition(0);
-	//    edit_->setText(text_);
-	edit_->resize(size_ - QSize(1, 1));
+	edit_->resize(300, 260);
 	edit_->move(pos_ + QPoint(1, 1));
+	edit_->grabKeyboard();
 	edit_->show();
 }
 
@@ -93,25 +90,20 @@ void TextGraph::DeserializeFrom(QDataStream& stream)
 
 void TextGraph::draw(QPainter& p)
 {
-	Graph::draw(p);
-
 	if (!edit_->isVisible()) {
-		p.save();
-
 		auto geo = Geometry();
-		geo.adjust(3, 3, -3, -3);
-		p.setFont(text_style_.font_);
-
 		p.fillRect(geo, text_style_.bk_color_);
+		Graph::draw(p);
+
+		p.save();
 		QTextOption opt;
 		opt.setWrapMode(QTextOption::WordWrap);
 		p.setPen(text_style_.color_);
+		p.setFont(text_style_.font_);
+
+		geo.adjust(3, 3, -3, -3);
+
 		p.drawText(geo, text_, opt);
-		//    p.translate(pos_);
-		//    doc_->documentLayout()->setPaintDevice(p.device());
-		//    doc_->setPageSize(size_);
-		//    auto doc = edit_->document();
-		//    doc->drawContents(&p);
 
 		p.restore();
 	}

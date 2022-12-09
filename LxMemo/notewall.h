@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "notemanager.h"
+#include "Memo.h"
 
 namespace Ui {
 class NoteWall;
@@ -29,7 +30,7 @@ signals:
     //右键点击,如果没有选中note，则NoteWidget为空
     void CustomClicked(const QPoint&, NoteWidget*);
 
-    void MemoAddTriggered();
+    void MemoAddTriggered(MemoType);
     void ImageAddTriggered();
     void FolderAddTriggered();
     void MemoImportTriggered();

@@ -77,7 +77,7 @@ void Graph::draw(QPainter &p)
     p.save();
     if(selected_) {
         auto geo = Geometry();
-        p.fillRect(geo, QColor("#efefef"));
+        //p.fillRect(geo, QColor("#efefef"));
         p.drawRect(geo);
 
         auto top_left_rect = QRect(geo.topLeft() - QPoint(3, 3), QSize(6, 6));

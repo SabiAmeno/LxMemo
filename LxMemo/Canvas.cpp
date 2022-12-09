@@ -10,12 +10,17 @@ Canvas::Canvas(QWidget* parent)
 
 	dock_ = new DockWindow(this);
 	dock_->SetAutoShrink(false);
-	dock_->SetSize(QSize(200, 30));
-	dock_->SetStickArea(StickArea::kBottom);
+	dock_->SetSize(QSize(36, 300));
+	dock_->SetStickArea(StickArea::kLeft);
+	dock_->SetFixedStick(true);
+	//dock_->SetAutoHeight(true);
 
 	auto txt_button = new QToolButton();
 	auto pix_button = new QToolButton();
 	auto graph_button = new QToolButton();
+	auto xx1 = new QToolButton();
+	auto xx2 = new QToolButton();
+
 	txt_button->setFixedSize(24, 24);
 	pix_button->setFixedSize(24, 24);
 	graph_button->setFixedSize(24, 24);
@@ -23,11 +28,38 @@ Canvas::Canvas(QWidget* parent)
 	pix_button->setText("PIX");
 	graph_button->setText("GRP");
 
+	xx1->setFixedSize(24, 24);
+	xx2->setFixedSize(24, 24);
+	xx1->setText("X1");
+	xx2->setText("X2");
+
 	dock_->AddWidget(txt_button);
 	dock_->AddWidget(pix_button);
 	dock_->AddWidget(graph_button);
+	dock_->AddWidget(xx1);
+	dock_->AddWidget(xx2);
 
-	ui.property_widget->hide();
+	auto pal = dock_->palette();
+	pal.setColor(QPalette::Window, QColor(85, 170, 127));
+	dock_->setPalette(pal);
+
+	prop_dock_ = new DockWindow(this);
+	prop_dock_->SetAutoShrink(false);
+	prop_dock_->SetSize(QSize(220, height() - 40));
+	prop_dock_->SetStickArea(StickArea::kRight);
+	prop_dock_->SetFixedStick(true);
+	prop_dock_->SetAutoHeight(true);
+
+	style_widget_ = new TextStyleWidget();
+	prop_dock_->AddWidget(style_widget_);
+
+	pal = prop_dock_->palette();
+	pal.setColor(QPalette::Window, Qt::transparent);
+	prop_dock_->setPalette(pal);
+
+	prop_dock_->hide();
+
+	//ui.property_widget->hide();
 	connect(txt_button, &QToolButton::clicked, ui.canvas, &GraphicCanvas::onWordAdd);
 	connect(pix_button, &QToolButton::clicked, ui.canvas, &GraphicCanvas::onPictureAdd);
 	connect(graph_button, &QToolButton::clicked, ui.canvas, &GraphicCanvas::onGraphAdd);
@@ -55,17 +87,23 @@ void Canvas::SetMeta(SharedGraph meta)
 	ui.canvas->DeserializeFrom(meta_->Data());
 }
 
-void Canvas::onShowTextStyle(Graph* graph)
+void Canvas::onShowTextStyle(Graph* graph, bool isleft)
 {
 	if(graph)
-		ui.property_widget->SetGraph(graph);
-	ui.property_widget->setVisible(nullptr != graph);
+		style_widget_->SetGraph(graph);
+	//bool vi = prop_dock_->isVisible();
+	//vi = graph && (!isleft || (isleft && vi));
+	prop_dock_->setVisible(isleft);
 }
 
 void Canvas::resizeEvent(QResizeEvent* e)
 {
+	dock_->SetViewport(QRect(ui.canvas->pos(), ui.canvas->size()));
 	dock_->Update();
-	//style_dock_->Update();
+	
+	//auto pos = 
+	prop_dock_->SetViewport(QRect(ui.canvas->pos(), ui.canvas->size()));
+	prop_dock_->Update();
 
 	QWidget::resizeEvent(e);
 }

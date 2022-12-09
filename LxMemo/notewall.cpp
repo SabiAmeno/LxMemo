@@ -107,8 +107,8 @@ void NoteWall::paintEvent(QPaintEvent *e)
     auto& notes = nm_->Notes();
     int wd = width(), hg = height();
 
-    int n = (wd - 40) / 114;
-    int x = 30, y = 30;
+    int n = std::max(1, (wd - 40) / 84);
+    int x = 30, y = 20;
 
     int row = notes.size() / n;
     int col = notes.size() % n;
@@ -123,9 +123,9 @@ void NoteWall::paintEvent(QPaintEvent *e)
                 note->SetPosition(QPoint(x, y));
                 note->Draw(p);
             }
-            x += 94 + 30;
+            x += 64 + 30;
         }
-        y += 92 + 20;
+        y += 62 + 20;
     }
 
     QWidget::paintEvent(e);
@@ -134,7 +134,11 @@ void NoteWall::paintEvent(QPaintEvent *e)
 void NoteWall::onAdded()
 {
     QMenu menu;
-    auto add_memo = menu.addAction(QIcon(":/LxMemo/icons/add.png"), "Add Memo");
+    auto sub = menu.addMenu(QIcon(":/LxMemo/icons/add.png"), "Add");
+    auto add_memo = sub->addAction(QIcon(":/LxMemo/icons/html.png"), "Memo");
+    auto add_text = sub->addAction(QIcon(":/LxMemo/icons/text.png"), "Text");
+    auto add_md = sub->addAction(QIcon(":/LxMemo/icons/markdown.png"), "Markdown");
+
     auto add_img = menu.addAction(QIcon(":/LxMemo/icons/graph.png"), "Add Image");
     auto add_folder = menu.addAction(QIcon(":/LxMemo/icons/icon_new folder.png"), "Add Folder");
     auto import_memo = menu.addAction(QIcon(":/LxMemo/icons/file-import.png"), "Import Memo");
@@ -146,7 +150,10 @@ void NoteWall::onAdded()
     //QRect start(rc.adjusted(0, 0, 20, 0));
     //QRect end = start.adjusted(0, 160, 0, 0);
     //StartGeometryAnimation(menu, start, end);
-    connect(add_memo, &QAction::triggered, this, &NoteWall::MemoAddTriggered);
+    connect(add_memo, &QAction::triggered, this, [this] {emit MemoAddTriggered(kMemoHtml); });
+    connect(add_text, &QAction::triggered, this, [this] {emit MemoAddTriggered(kMemoText); });
+    connect(add_md, &QAction::triggered, this, [this] {emit MemoAddTriggered(kMemoMarkdown); });
+
     connect(add_img, &QAction::triggered, this, &NoteWall::ImageAddTriggered);
     connect(add_folder, &QAction::triggered, this, &NoteWall::FolderAddTriggered);
     connect(import_memo, &QAction::triggered, this, &NoteWall::MemoImportTriggered);
@@ -244,7 +251,7 @@ void NoteWall::changeScrollRange()
     int count = nm_->NoteCount()-1;
     int r = count / 2 + 1;
 
-    int h = 30 + r * (92 + 30);
+    int h = 20 + r * (64 + 20);
     if(h > height()) {
         ui->verticalScrollBar->setMaximum(h - height());
 //        ui->verticalScrollBar->setVisible(true);

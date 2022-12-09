@@ -24,7 +24,7 @@ TitleBar::TitleBar(QWidget* parent)
 	addWidget(title_label_);
 
 	auto close_action = new QAction(QIcon(":/LxMemo/icons/close.png"), "", this);
-	auto max_action = new QAction(QIcon(":/LxMemo/icons/maximum.png"), "", this);
+	auto max_action = new QAction(QIcon(":/LxMemo/icons/min-max.png"), "minmax", this);
 	auto min_action = new QAction(QIcon(":/LxMemo/icons/minimum.png"), "", this);
 	close_action->setObjectName("close_action");
 	min_action->setObjectName("min_action");
@@ -41,7 +41,17 @@ TitleBar::TitleBar(QWidget* parent)
 
     connect(close_action, &QAction::triggered, this, &TitleBar::closeButtonClicked);
     connect(min_action, &QAction::triggered, this, &TitleBar::minimumButtonClicked);
-	connect(max_action, &QAction::triggered, this, &TitleBar::maximumButtonClicked);
+	connect(max_action, &QAction::triggered, this, [this, max_action] {
+		if (max_action->text() == "minmax") {
+			max_action->setText("maxmin");
+			max_action->setIcon(QIcon(":/LxMemo/icons/max-min.png"));
+		}
+		else {
+			max_action->setText("minmax");
+			max_action->setIcon(QIcon(":/LxMemo/icons/min-max.png"));
+		}
+		emit maximumButtonClicked();
+	});
 }
 
 void TitleBar::SetTitle(const QString& title)

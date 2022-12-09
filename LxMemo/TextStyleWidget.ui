@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>216</width>
+    <width>237</width>
     <height>395</height>
    </rect>
   </property>
@@ -228,7 +228,14 @@ QToolButton[popupMode=&quot;1&quot;] { /* only for MenuButtonPopup */
     </widget>
    </item>
    <item row="4" column="1" colspan="2">
-    <widget class="QWidget" name="widget" native="true"/>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="5" column="1">
     <spacer name="verticalSpacer">

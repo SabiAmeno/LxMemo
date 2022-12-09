@@ -3,7 +3,6 @@
 
 #include "graph.h"
 #include <QPixmap>
-#include <QFileDialog>
 
 class GraphicGraph : public Graph
 {
@@ -32,7 +31,7 @@ private:
     QPixmap origin_pixmap_{};
 
     QString file_{};
-    QFileDialog* file_dialog_{nullptr};
+    //QFileDialog* file_dialog_{nullptr};
 };
 
 #endif // GRAPHICGRAPH_H

@@ -35,7 +35,7 @@ public slots:
 	void onGraphAdd();
 signals:
 	void CanvasChanged();
-	void GraphClicked(Graph*);
+	void GraphClicked(Graph*, bool);
 private slots:
 
 	void onDeleteGraph();
@@ -65,6 +65,8 @@ private:
 	GraphGroup* group_{ nullptr };
 	Graph* selected_graph_{ nullptr };
 	SizeDirect cursor_direction_{ kDirectionNone };
+
+	bool prop_visible_{ false };
 };
 
 #endif // GRAPHICCANVAS_H

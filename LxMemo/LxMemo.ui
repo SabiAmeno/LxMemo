@@ -6,140 +6,103 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>468</height>
+    <width>316</width>
+    <height>504</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>300</width>
-    <height>0</height>
-   </size>
-  </property>
   <property name="windowTitle">
-   <string>LxMemo</string>
+   <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <property name="verticalSpacing">
-    <number>2</number>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
    </property>
    <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QToolButton" name="button_back">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="LxMemo.qrc">
-         <normaloff>:/LxMemo/icons/back.png</normaloff>:/LxMemo/icons/back.png</iconset>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="button_forward">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset resource="LxMemo.qrc">
-         <normaloff>:/LxMemo/icons/forward.png</normaloff>:/LxMemo/icons/forward.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Microsoft YaHei UI</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>/</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::PlainText</enum>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="button_new_folder">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="LxMemo.qrc">
-         <normaloff>:/LxMemo/icons/icon_new folder.png</normaloff>:/LxMemo/icons/icon_new folder.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="AnimationSW" name="stackedWidget">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QToolButton" name="button_back">
+     <property name="text">
+      <string>...</string>
      </property>
-     <widget class="QWidget" name="page">
-      <layout class="QGridLayout" name="gridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="NoteWall" name="note_wall" native="true">
-         <layout class="QGridLayout" name="gridLayout_2"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+     <property name="icon">
+      <iconset resource="LxMemo.qrc">
+       <normaloff>:/LxMemo/icons/back.png</normaloff>:/LxMemo/icons/back.png</iconset>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0" colspan="3">
+    <widget class="NoteWall" name="note_wall" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Microsoft YaHei UI</family>
+       <pointsize>9</pointsize>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::PlainText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <widget class="TitleBar" name="widget" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#widget{background-color: rgb(85, 170, 127);}
+</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="spacing">
       <number>0</number>
@@ -207,18 +170,9 @@ QToolButton:pressed{
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="TitleBar" name="widget" native="true"/>
-   </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>AnimationSW</class>
-   <extends>QStackedWidget</extends>
-   <header>AnimationSW.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>TitleBar</class>
    <extends>QWidget</extends>

@@ -73,26 +73,39 @@ DockWindow::~DockWindow()
     delete shrink_geo_;
 }
 
-void DockWindow::SetStickArea(StickArea sa)
+void DockWindow::SetViewport(const QRect& viewport)
 {
-    stick_area_ = sa;
-    is_fixed_ = stick_area_ != StickArea::kLRSide;
+    viewport_ = viewport;
+
+    if (auto_height_) {
+        size_.setHeight(viewport_.height());
+    }
+    if (auto_width_) size_.setWidth(viewport_.width());
 
     resize(size_);
 
-    if(is_fixed_) {
-        ui.title_frame->hide();
-        int x = (parentWidget()->width() - size_.width())/2;
-        int y = 0;
-        if(StickArea::kBottom == stick_area_) {
-            y = parentWidget()->height() - size_.height();
-        }
-        SetPosition(QPoint(x, y));
-    } else {
-        SetPosition(QPoint(0, (parentWidget()->height() - size_.height())/2));
-    }
+    Update();
+}
+
+void DockWindow::SetStickArea(StickArea sa)
+{
+    stick_area_ = sa;
+
+    resize(size_);
 
     shrink();
+}
+
+void DockWindow::SetFixedStick(bool fixed)
+{
+    is_fixed_ = fixed;
+    if (is_fixed_) {
+        ui.title_frame->hide();
+        //adjustPosition();
+    }
+    else {
+        SetPosition(QPoint(viewport_.left(), (viewport_.height() - size_.height()) / 2));
+    }
 }
 
 void DockWindow::SetPosition(const QPoint &pos)
@@ -123,14 +136,50 @@ void DockWindow::SetAutoShrink(bool shrink)
     enable_shrink_ = shrink;
 }
 
+void DockWindow::SetAutoWidth(bool auto_width)
+{
+    auto_width_ = auto_width;
+}
+
+void DockWindow::SetAutoHeight(bool auto_height)
+{
+    auto_height_ = auto_height;
+}
+
 void DockWindow::Update()
 {
-    if(StickArea::kBottom == stick_area_) {
-        int x = (parentWidget()->width() - size_.width())/2;
-        int y = parentWidget()->height() - size_.height() - 12;
-        if(is_shrinked_)
-            y = parentWidget()->height() - kDockWidth;
-        SetPosition(QPoint(x, y));
+    //if(StickArea::kBottom == stick_area_) {
+    //    int x = (viewport_.width() - size_.width())/2;
+    //    int y = viewport_.height() - size_.height() - 12;
+    //    if(is_shrinked_)
+    //        y = viewport_.bottom() - kDockWidth;
+    //    SetPosition(QPoint(x, y));
+    //}
+
+    if (!is_shrinked_ && is_fixed_) {
+        switch (stick_area_)
+        {
+        case StickArea::kTop:
+            break;
+        case StickArea::kBottom:
+            break;
+        case StickArea::kLeft:
+        {
+            int x = viewport_.left();
+            int y = viewport_.top() + (viewport_.height() - size_.height()) / 2;
+            SetPosition(QPoint(x, y));
+            break;
+        }
+        case StickArea::kRight:
+        {
+            int x = viewport_.right() - size_.width();
+            int y = viewport_.top() + (viewport_.height() - size_.height()) / 2;
+            SetPosition(QPoint(x, y));
+            break;
+        }
+        default:
+            break;
+        }
     }
     update();
 }
@@ -155,7 +204,8 @@ bool DockWindow::event(QEvent *event)
         QTimer::singleShot(300,
             [this]{
             if(!is_shrinked_) {
-                if(StickArea::kLRSide == stick_area_) {
+                if(StickArea::kLeft == stick_area_ 
+                    || StickArea::kRight == stick_area_) {
                     if(atLeft() || atRight())
                         shrink();
                 }
@@ -194,14 +244,14 @@ bool DockWindow::event(QEvent *event)
             if(is_shrinked_) {
                 int diffy = e->pos().y() - y_diff_;
                 int posy = pos().y() + diffy;
-                if(posy < parentWidget()->height()-5 && posy > 0)
+                if(posy < viewport_.height()-5 && posy > 0)
                     SetPosition(QPoint(pos().x(), posy));
             } else {
                 int diffx = e->pos().x() - x_diff_;
                 int diffy = e->pos().y() - y_diff_;
                 int posx = pos().x() + diffx;
                 int posy = pos().y() + diffy;
-                if(parentWidget()->rect().contains(QPoint(posx, posy)))
+                if(viewport_.contains(QPoint(posx, posy)))
                     SetPosition(QPoint(posx, posy));
             }
         }
@@ -209,17 +259,20 @@ bool DockWindow::event(QEvent *event)
     }
     case QEvent::MouseButtonRelease:
     {
+        if (mouse_press_titlebar_ && !is_fixed_) {
+            if (atLeft()) {
+                if (!is_shrinked_ && layout_type_ != 1)
+                    reLayout(1);
+                SetPosition(QPoint(0, y()));
+            }
+            else if (atRight()) {
+                if (!is_shrinked_ && layout_type_ != 1)
+                    reLayout(1);
+                SetPosition(QPoint(viewport_.width() - size_.width(), pos().y()));
+            }
+        }
         mouse_press_titlebar_ = false;
 
-        if(atLeft()) {
-            if(!is_shrinked_ && layout_type_ != 1)
-                reLayout(1);
-            SetPosition(QPoint(0, y()));
-        } else if(atRight()) {
-            if(!is_shrinked_ && layout_type_ != 1)
-                reLayout(1);
-            SetPosition(QPoint(parentWidget()->width() - size_.width(), pos().y()));
-        }
         break;
     }
     default:
@@ -242,7 +295,7 @@ void DockWindow::paint(QPaintEvent *e)
         color.setAlpha(opacity_);
     }
     QPainterPath path;
-    path.addRoundedRect(rect(), 5, 5);
+    path.addRoundedRect(rect(), 1, 1);
     p.fillPath(path, color);
 }
 
@@ -261,7 +314,7 @@ void DockWindow::expand()
             end = start.adjusted(0, -size_.height() + kDockWidth, 0, 0);
             break;
         }
-        case StickArea::kLRSide:
+        case StickArea::kLeft:
         {
             start.setSize(QSize(kDockWidth, size_.height()));
 
@@ -270,6 +323,11 @@ void DockWindow::expand()
             } else {
                 end = start.adjusted(-size_.width() + kDockWidth, 0, 0, 0);
             }
+            break;
+        }
+        case StickArea::kRight:
+        {
+            start.setSize(QSize(kDockWidth, size_.height()));
             break;
         }
         }
@@ -298,12 +356,17 @@ void DockWindow::shrink()
             end = start.adjusted(0, size_.height() - kDockWidth, 0, 0);
             break;
         }
-        case StickArea::kLRSide:
+        case StickArea::kLeft:
         {
             if(atLeft())
                 end = start.adjusted(0, 0, -size_.width() + kDockWidth, 0);
             else
                 end = start.adjusted(size_.width() - kDockWidth, 0, 0, 0);
+            break;
+        }
+        case StickArea::kRight:
+        {
+            //start.setSize(QSize(kDockWidth, size_.height()));
             break;
         }
         }
@@ -375,20 +438,40 @@ void DockWindow::reNewLayout()
     }
 
     QGridLayout* grid = new QGridLayout();
-    grid->setContentsMargins(2,2,2,2);
-    grid->setSpacing(2);
-
+    grid->setContentsMargins(0,0,0,0);
+    //grid->setSpacing(2);
+    ui.frame->setContentsMargins(0, 0, 0, 0);
     ui.frame->setLayout(grid);
 }
 
 bool DockWindow::atRight()
 {
-    return geometry().right() + 5 >= parentWidget()->width();
+    return geometry().right() + 5 >= viewport_.width();
 }
 
 bool DockWindow::atLeft()
 {
     return pos().x() <= 5;
+}
+
+bool DockWindow::adjustPosition()
+{
+    int x = (viewport_.width() - size_.width()) / 2;
+    int y = 0;
+    if (StickArea::kBottom == stick_area_) {
+        y = viewport_.height() - size_.height();
+    }
+    else if (StickArea::kLeft == stick_area_) {
+        x = 0;
+        y = (viewport_.height() - size_.height()) / 2;
+    }
+    else if (StickArea::kRight == stick_area_) {
+        x = (viewport_.width() - size_.width());
+    }
+
+    SetPosition(QPoint(x, y));
+
+    return true;
 }
 
 void DockWindow::on_single_column_clicked()

@@ -23,7 +23,7 @@ class Path
 {
 public:
 	Path(const QString& s) {
-		_paths = s.split('/', Qt::SkipEmptyParts);
+		_paths = s.split('>', Qt::SkipEmptyParts);
 	}
 	Path(const QStringList& p) : _paths(p) {}
 
@@ -37,8 +37,9 @@ public:
 
 		return Path(p);
 	}
+	QString dirName() { return _paths.back(); }
 	bool isRoot() const { return _paths.isEmpty(); }
-	QString path() const { return "/" + _paths.join('/'); }
+	QString path() const { return ">" + _paths.join('>'); }
 private:
 	QStringList _paths;
 };
@@ -67,7 +68,7 @@ private slots:
 	void onForward();
 	void onAddFolder();
 
-	void onAddMemo();
+	void onAddMemo(MemoType type);
 	void onAddGraph();
 	void onImportMemo();
 
@@ -79,7 +80,7 @@ private:
 	void initDB();
 	void initRecycleMemo();
 	void editRecycleItem(const QModelIndex& index);
-	void addMemo(SharedMeta memo);
+	void addMemo(SharedMemo memo);
 	void queryData(const Path& path);
 
 	void exportHtml(SharedMemo memo);
@@ -107,7 +108,7 @@ private:
 	//bool start_slide_{ false };
 	//QPoint slide_position_;
 
-	Path path_{ "/" };
+	Path path_{ ">" };
 
 	QModelIndex cutt_item_;
 	SharedMeta cutt_meta_ = nullptr;

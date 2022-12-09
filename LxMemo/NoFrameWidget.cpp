@@ -50,11 +50,12 @@ void NoFrameWidget::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
 
-	painter.setRenderHint(QPainter::Antialiasing, true);
 	QPainterPath path;
-	path.addRoundRect(QRect(shadeWidth, shadeWidth, this->width() - 2 * shadeWidth, this->height() - 2 * shadeWidth), 4);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	path.addRoundedRect(shadeWidth, shadeWidth, this->width() - 2 * shadeWidth, this->height() - 2 * shadeWidth, 2, 2);
 	//painter.fillRect(QRect(shadeWidth, shadeWidth, this->width() - 2 * shadeWidth, this->height() - 2 * shadeWidth), QBrush(Qt::white));
-	painter.fillPath(path, QBrush(Qt::white));
+	//painter.fillRect(QRect(0, 0, this->width(), this->height()), QBrush(Qt::white));
+	painter.fillPath(path, Qt::white);
 
 	QColor color(38, 78, 119, 100);
 	for (int i = 1; i < shadeWidth; i++)
@@ -62,9 +63,9 @@ void NoFrameWidget::paintEvent(QPaintEvent* event)
 		color.setAlpha(60 - sqrt(i) * 20);
 		painter.setPen(color);
 		// ·½½ÇÒõÓ°±ß¿ò;
-		//painter.drawRect(shadeWidth - i, shadeWidth - i, this->width() - (shadeWidth - i) * 2, this->height() - (shadeWidth - i) * 2);
+		painter.drawRect(shadeWidth - i, shadeWidth - i, this->width() - (shadeWidth - i) * 2, this->height() - (shadeWidth - i) * 2);
 		// Ô²½ÇÒõÓ°±ß¿ò;
-		painter.drawRoundedRect(shadeWidth - i, shadeWidth - i, this->width() - (shadeWidth - i) * 2, this->height() - (shadeWidth - i) * 2, 4, 4);
+		//painter.drawRoundedRect(shadeWidth - i, shadeWidth - i, this->width() - (shadeWidth - i) * 2, this->height() - (shadeWidth - i) * 2, 4, 4);
 	}
 
 	return QWidget::paintEvent(event);

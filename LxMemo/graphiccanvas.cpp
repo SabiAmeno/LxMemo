@@ -16,18 +16,20 @@ GraphicCanvas::GraphicCanvas(QWidget* parent) :
 
 	group_ = new GraphGroup(this);
 	setAutoFillBackground(true);
-	setStyleSheet("background-color: black");
+	//setStyleSheet("background-color: black");
 	//auto pal = palette();
 	//pal.setBrush(QPalette::Window, Qt::white);
 	//setPalette(pal);
 	//connect(ui.word_button, &QToolButton::clicked, this, &GraphicCanvas::onWordAdd);
 	//connect(ui.picture_button, &QToolButton::clicked, this, &GraphicCanvas::onPictureAdd);
 	//connect(ui.graph_button, &QToolButton::clicked, this, &GraphicCanvas::onGraphAdd);
+	grabKeyboard();
 	setMouseTracking(true);
 }
 
 GraphicCanvas::~GraphicCanvas()
 {
+	group_->DeleteAll();
 }
 
 QByteArray GraphicCanvas::SerializeTo()
@@ -48,7 +50,7 @@ void GraphicCanvas::DeserializeFrom(QByteArray&& data)
 	rbuf.open(QIODevice::ReadOnly);
 	QDataStream rstream(&rbuf);
 
-	group_->DeleteAll();
+	//group_->DeleteAll();
 
 	GraphType type;
 	rstream >> type;
@@ -175,8 +177,8 @@ void GraphicCanvas::mousePressEvent(QMouseEvent* e)
 
 			update();
 		}
-		if (!selected_graph_)
-			emit GraphClicked(selected_graph_);
+		//if (!selected_graph_)
+		emit GraphClicked(selected_graph_, prop_visible_);
 	}
 	else {
 		//右键也进行选取
@@ -190,18 +192,24 @@ void GraphicCanvas::mousePressEvent(QMouseEvent* e)
 
 		QMenu menu;
 		if (selected_graph_) {
-			//auto del_action = menu.addAction("delete");
-			//auto move_down = menu.addAction("move down");
-			//auto move_up = menu.addAction("move up");
-			//auto move_top = menu.addAction("move top");
-			//auto move_bottom = menu.addAction("move bottom");
+			auto del_action = menu.addAction("delete");
+			auto move_down = menu.addAction("move down");
+			auto move_up = menu.addAction("move up");
+			auto move_top = menu.addAction("move top");
+			auto move_bottom = menu.addAction("move bottom");
+			auto show_prop = menu.addAction("show property");
+			show_prop->setCheckable(true);
+			show_prop->setChecked(prop_visible_);
 
-			//connect(del_action, &QAction::triggered, this, &GraphicCanvas::onDeleteGraph);
-			//connect(move_down, &QAction::triggered, this, &GraphicCanvas::onMoveDown);
-			//connect(move_up, &QAction::triggered, this, &GraphicCanvas::onMoveUp);
-			//connect(move_top, &QAction::triggered, this, &GraphicCanvas::onMoveTop);
-			//connect(move_bottom, &QAction::triggered, this, &GraphicCanvas::onMoveBottom);
-			//text_style_->show();
+			connect(del_action, &QAction::triggered, this, &GraphicCanvas::onDeleteGraph);
+			connect(move_down, &QAction::triggered, this, &GraphicCanvas::onMoveDown);
+			connect(move_up, &QAction::triggered, this, &GraphicCanvas::onMoveUp);
+			connect(move_top, &QAction::triggered, this, &GraphicCanvas::onMoveTop);
+			connect(move_bottom, &QAction::triggered, this, &GraphicCanvas::onMoveBottom);
+			connect(show_prop, &QAction::triggered, this, [this] {
+				prop_visible_ = !prop_visible_;
+				emit GraphClicked(selected_graph_, prop_visible_); 
+			});
 		}
 		else {
 			auto add_text_action = menu.addAction("add text");
@@ -210,7 +218,7 @@ void GraphicCanvas::mousePressEvent(QMouseEvent* e)
 			connect(add_text_action, &QAction::triggered, this, &GraphicCanvas::onAddText);
 			connect(add_pix_action, &QAction::triggered, this, &GraphicCanvas::onAddPicture);
 		}
-		emit GraphClicked(selected_graph_);
+		//emit GraphClicked(selected_graph_, false);
 
 		menu.exec(mapToGlobal(e->pos()));
 	}
@@ -335,10 +343,12 @@ void GraphicCanvas::mouseMoveEvent(QMouseEvent* e)
 void GraphicCanvas::mouseReleaseEvent(QMouseEvent* e)
 {
 	move_start_ = QPoint();
+	QWidget::mouseReleaseEvent(e);
 }
 
 void GraphicCanvas::wheelEvent(QWheelEvent* e)
 {
+	QWidget::wheelEvent(e);
 }
 
 void GraphicCanvas::mouseDoubleClickEvent(QMouseEvent* e)
@@ -397,6 +407,7 @@ void GraphicCanvas::keyReleaseEvent(QKeyEvent* e)
 			update();
 		}
 	}
+
 }
 
 void GraphicCanvas::closeEvent(QCloseEvent* e)

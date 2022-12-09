@@ -19,7 +19,7 @@ public:
 	void SetMeta(SharedGraph meta);
 private slots:
 	void onCanvasSave();
-	void onShowTextStyle(Graph* graph);
+	void onShowTextStyle(Graph* graph, bool isleft);
 protected:
 	virtual void resizeEvent(QResizeEvent* e) override;
 private:
@@ -27,6 +27,8 @@ private:
 
 	SharedGraph meta_{ nullptr };
 	DockWindow* dock_{ nullptr };
+	DockWindow* prop_dock_{ nullptr };
+	TextStyleWidget* style_widget_{ nullptr };
 
 	MetaSaver* meta_saver_{ nullptr };
 };

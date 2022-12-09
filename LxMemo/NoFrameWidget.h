@@ -20,7 +20,7 @@ protected:
     virtual void showEvent(QShowEvent* event) override;
 
 private:
-    int shadeWidth = 10;
+    int shadeWidth = 9;
 
     QPoint pStart;
     bool   isMove{ false };

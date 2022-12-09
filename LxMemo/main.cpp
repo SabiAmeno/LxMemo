@@ -137,10 +137,10 @@ int main(int argc, char* argv[])
     QApplication::setWindowIcon(QIcon(":/LxMemo/icons/memo.png"));
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-    QFile fi(":/LxMemo/icons/style.qss");
-    fi.open(QIODevice::ReadOnly);
-    a.setStyleSheet(fi.readAll());
-    fi.close();
+    //QFile fi(":/LxMemo/icons/style.qss");
+    //fi.open(QIODevice::ReadOnly);
+    //a.setStyleSheet(fi.readAll());
+    //fi.close();
 
     DWORD opid = -1;
     auto pid = GetCurrentProcessId();

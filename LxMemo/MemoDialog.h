@@ -92,4 +92,5 @@ private:
 	//std::condition_variable cv_;
 
 	bool text_selected_ = false;
+	QTimer save_timer_{};
 };

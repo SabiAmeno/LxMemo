@@ -7,7 +7,7 @@ GraphNote::GraphNote(uint32_t id)
 
 void GraphNote::paint(QPainter& painter, const QRect& rect) const
 {
-	QPixmap pix(":/LxMemo/icons/bird.png");
+	QPixmap pix(":/LxMemo/icons/palette.png");
 	painter.save();
 
 	painter.setRenderHint(QPainter::Antialiasing);

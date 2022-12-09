@@ -11,7 +11,9 @@ enum class StickArea
 {
     kTop   ,
     kBottom,
-    kLRSide //左右两侧
+    kLeft,
+    kRight,
+    //左右两侧
 };
 
 class DockWindow : public QWidget
@@ -21,7 +23,10 @@ public:
     explicit DockWindow(QWidget *parent = nullptr);
     ~DockWindow();
 
+    void SetViewport(const QRect& viewport);
+
     void SetStickArea(StickArea sa);
+    void SetFixedStick(bool fixed);
     void SetPosition(const QPoint& pos);
 
     void SetSize(const QSize& size);
@@ -29,6 +34,8 @@ public:
 
     void SetOpacity(int opacity);
     void SetAutoShrink(bool shrink);
+    void SetAutoHeight(bool auto_height);
+    void SetAutoWidth(bool auto_width);
 
     void Update();
 protected:
@@ -50,13 +57,19 @@ private:
 
     bool atRight();
     bool atLeft();
+    //顶fixed为真时，重新设置位置
+    bool adjustPosition();
 private:
     Ui::DockWidget ui;
+
+    QRect viewport_{};
 
     std::atomic_bool is_shrinked_{false};
     QSize size_{};
 
     bool enable_shrink_{true};
+    bool auto_height_{ false };
+    bool auto_width_{ false };
 //    QPropertyAnimation* expand_ani_{};
 //    QPropertyAnimation* shrink_ani_{};
 
@@ -73,7 +86,7 @@ private:
     //是否固定，当dock位于左/右侧时，默认不固定，
     //当其位于上/下位置时，将会默认设置为固定位置
     bool is_fixed_{false};
-    StickArea stick_area_{StickArea::kLRSide};
+    StickArea stick_area_{StickArea::kLeft};
 
     int opacity_{255};
 };

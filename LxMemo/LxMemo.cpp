@@ -30,7 +30,6 @@ LxMemo::LxMemo(QWidget* parent)
 	ui.setupUi(this);
 
 	setWindowIcon(QIcon(":/LxMemo/icons/memo.png"));
-	//setStyleSheet("background-color:transparent;");
 	//setStyleSheet("background-color:#55000000;");
 	ui.widget->SetTitle(tr("LxMemo"));
 	ui.note_wall->SetBackground(Qt::black);
@@ -38,11 +37,12 @@ LxMemo::LxMemo(QWidget* parent)
 	ui.lineEdit->setVisible(SEARCH_ENABLED);
 	ui.toolButton->setVisible(SEARCH_ENABLED);
 
-	ui.button_forward->setVisible(false);
+	//ui.button_forward->setVisible(false);
 	ui.button_back->setEnabled(false);
 
 	connect(ui.widget, &TitleBar::closeButtonClicked, this, [this] {close(); });
 	connect(ui.widget, &TitleBar::minimumButtonClicked, this, [this] {showMinimized(); });
+	//connect(ui.widget, &TitleBar::maximumButtonClicked, this, [this] {if (!isMaximized()) showMaximized(); else showNormal(); });
 	connect(ui.widget, &TitleBar::positionChanged, this, [this](const QPoint& diff) {move(pos() + diff); });
 
 	/* connect(ui.listWidget, &QListWidget::doubleClicked, this, &LxMemo::onEditMemo);
@@ -59,8 +59,8 @@ LxMemo::LxMemo(QWidget* parent)
 	connect(ui.note_wall, &NoteWall::MemoImportTriggered, this, &LxMemo::onImportMemo);
 
 	connect(ui.button_back, &QToolButton::clicked, this, &LxMemo::onBack);
-	connect(ui.button_forward, &QToolButton::clicked, this, &LxMemo::onForward);
-	connect(ui.button_new_folder, &QToolButton::clicked, this, &LxMemo::onAddFolder);
+	//connect(ui.button_forward, &QToolButton::clicked, this, &LxMemo::onForward);
+	//connect(ui.button_new_folder, &QToolButton::clicked, this, &LxMemo::onAddFolder);
 
 	initDB();
 
@@ -141,7 +141,7 @@ LxMemo::LxMemo(QWidget* parent)
 		cache.setCurrent(".cache");
 		SetFileAttributes((LPCWSTR)cache.absolutePath().unicode(), FILE_ATTRIBUTE_HIDDEN);
 	}
-#if 1
+#if 0
 	QGraphicsDropShadowEffect* shadow_effect = new QGraphicsDropShadowEffect();
 	shadow_effect->setOffset(0, 0);
 
@@ -161,10 +161,12 @@ LxMemo::~LxMemo()
 	delete db_;
 }
 
-void LxMemo::onAddMemo()
+void LxMemo::onAddMemo(MemoType type)
 {
+	auto memo = SharedMemo(new Memo());
+	memo->SetMemoType(type);
 	//Memo memo;
-	addMemo(SharedMemo(new Memo()));
+	addMemo(memo);
 }
 
 void LxMemo::onAddGraph()
@@ -187,17 +189,29 @@ void LxMemo::onAddGraph()
 	//dir.mkdir(tr("%1").arg(QString::number(meta->Id())));
 }
 
-void LxMemo::addMemo(SharedMeta memo)
+void LxMemo::addMemo(SharedMemo memo)
 {
 	auto note = ui.note_wall->AddNote();
 	note->SetMeta(memo);
 
 	auto time = QDateTime::currentDateTime().toString();
 
+	QString memo_type;
+	switch (memo->GetMemoType())
+	{
+	case kMemoHtml:
+		memo_type = "HTML"; break;
+	case kMemoMarkdown:
+		memo_type = "MARKDOWN"; break;
+	default:
+		memo_type = "TEXT"; break;
+	}
+
 	char buffer[512]{ 0 };
 	sprintf(buffer,
-		R"(insert into Memo (ID, PROP, IN_RECYCLE, TIME, PPATH, TYPE) values(%u, "%s", 0, "%s", "%s", "FILE");)",
-		memo->Id(), memo->PropertyToStream().data(), time.toLocal8Bit().data(), path_.path().toLocal8Bit().data());
+		R"(insert into Memo (ID, PROP, IN_RECYCLE, TIME, PPATH, TYPE) values(%u, "%s", 0, "%s", "%s", "FILE:%s");)",
+		memo->Id(), memo->PropertyToStream().data(), time.toLocal8Bit().data(), path_.path().toLocal8Bit().data(),
+		memo_type);
 
 	//ExecSQL(db_, buffer);
 	db_->Query(buffer);
@@ -311,15 +325,17 @@ void LxMemo::onMemoEdit(const QPoint& pos, NoteWidget* nw)
 
 	std::function<void(bool)> colorCB = [this](bool)
 	{
-		color_chunk_->move(0, height() - color_chunk_->height());
-		color_chunk_->resize(width(), color_chunk_->height());
+		auto sz = color_chunk_->size();
+		color_chunk_->move(rect().center() - QPoint(sz.width() / 2, sz.height() / 2));
+		//color_chunk_->move(0, height() - color_chunk_->height());
+		//color_chunk_->resize(width(), color_chunk_->height());
 		color_chunk_->show();
 	};
 
 	std::function<void(bool)> exportHtml = [this, meta](bool)
 	{
 		auto memo = meta->converTo<Memo>();
-		if (!memo->GetHtml().isEmpty()) {
+		if (!memo->IsEmpty()) {
 			this->exportHtml(memo);
 		}
 		else {
@@ -329,7 +345,7 @@ void LxMemo::onMemoEdit(const QPoint& pos, NoteWidget* nw)
 			if (result) {
 				auto& row = result->Get(0);
 				QString html = QString::fromLocal8Bit(QByteArray::fromBase64(any2chars(row[0])));
-				memo->SetHtml(html);
+				memo->SetRawData(html);
 				this->exportHtml(memo);
 			}
 		}
@@ -441,7 +457,7 @@ void LxMemo::onRecycleItemEdit(const QModelIndex& index)
 
 void LxMemo::onImportMemo()
 {
-	auto htmlFile = QFileDialog::getOpenFileName(nullptr, tr("Open"), QString(), "*.html;*.txt");
+	auto htmlFile = QFileDialog::getOpenFileName(nullptr, tr("Open"), QString(), "HTML(*.html);;TXT(*.txt);;Markdown(*.md *.markdown)");
 	if (htmlFile.isEmpty())
 		return;
 
@@ -452,15 +468,21 @@ void LxMemo::onImportMemo()
 		f.close();
 
 		auto memo = SharedMemo(new Memo());
-		memo->SetHtml(content);
+		memo->SetRawData(content);
+		QFileInfo info(f);
+		if (info.suffix() == "html" || info.suffix() == "txt")
+			memo->SetMemoType(kMemoHtml);
+		else
+			memo->SetMemoType(kMemoMarkdown);
+
 		addMemo(memo);
 
 		auto content_base = QString(content).toLocal8Bit().toBase64();
-		auto snap = memo->Snapshot().toLocal8Bit().toBase64();
-		std::unique_ptr<char> data(new char[content_base.length() + snap.length() + 256] { 0 });
-		int r = sprintf(data.get(), R"(update Memo set DATA="%s", SNAPSHOT="%s" where ID=%u;)",
+		//auto snap = memo->Snapshot().toLocal8Bit().toBase64();
+		std::unique_ptr<char> data(new char[content_base.length() /*+ snap.length()*/ + 256] { 0 });
+		int r = sprintf(data.get(), R"(update Memo set DATA="%s" where ID=%u;)",
 			content_base.data(),
-			snap.data(),
+			//snap.data(),
 			memo->Id());
 
 		//ExecSQL(db_, data.get());
@@ -475,20 +497,22 @@ void LxMemo::onImportMemo()
 /// <param name="index"></param>
 void LxMemo::onItemEdit(const QPoint& pos, NoteWidget* nw)
 {
-	if (nw) {
-		auto type = nw->MetaData()->type();
-		if (typeid(Memo).hash_code() == type) {
-			auto rect = nw->Geometry();
-			color_chunk_->hide();
+	//if (nw) {
+	//	auto type = nw->MetaData()->type();
+	//	if (typeid(Memo).hash_code() == type) {
+	//		auto rect = nw->Geometry();
+	//		color_chunk_->hide();
 
-			auto tR = rect.topRight();
-			auto r = QRect(tR - QPoint(30, -8), tR - QPoint(9, -21));
-			if (r.contains(pos)) {
-				//auto pos = ui.listWidget->mapToGlobal(r.bottomLeft());
-				onMemoEdit(pos, nw);
-			}
-		}
-	}
+	//		auto tR = rect.topRight();
+	//		auto r = QRect(tR - QPoint(30, -8), tR - QPoint(9, -21));
+	//		if (r.contains(pos)) {
+	//			//auto pos = ui.listWidget->mapToGlobal(r.bottomLeft());
+	//			onMemoEdit(pos, nw);
+	//		}
+	//	}
+	//}
+	//else
+		color_chunk_->hide();
 }
 
 ///在编辑memo后，更新主界面memo的snapshot
@@ -505,8 +529,10 @@ void LxMemo::onMemoClosed()
 	auto obj = qobject_cast<MemoDialog*>(sender());
 	//auto w = obj->Widget<MemoDialog*>();
 	auto note = opend_dialog_.key(obj);
-	if (note)
+	if (note) {
+		//delete obj;
 		opend_dialog_.remove(note);
+	}
 	//delete w;
 
 	/// <summary>
@@ -637,8 +663,8 @@ void LxMemo::onReadDataFromDB(const Row& row)
 
 	if (type == "FOLDER") {
 		auto meta = SharedFolder(new Folder(id));
-		QDir dir(path);
-		meta->setName(dir.dirName());
+		Path p(path);
+		meta->setName(p.dirName());
 		meta->SetTime(time);
 		meta->StreamToProperty(prop);
 
@@ -655,6 +681,14 @@ void LxMemo::onReadDataFromDB(const Row& row)
 		memo->SetSnapshot(snapshot);
 		memo->StreamToProperty(prop);
 		memo->SetTime(time);
+
+		auto type_list = type.split(":");
+		if (type_list.size() >= 2) {
+			if (type_list[1] == "HTML")
+				memo->SetMemoType(kMemoHtml);
+			else
+				memo->SetMemoType(kMemoMarkdown);
+		}
 
 		auto note = ui.note_wall->AddNote();
 		note->SetMeta(memo);
@@ -682,10 +716,23 @@ void LxMemo::exportHtml(SharedMemo memo)
 	QFile file(htmlFile);
 	file.open(QIODevice::WriteOnly);
 	if (file.isOpen()) {
-		if (suffx == "md")
-			file.write(memo->GetMarkdown().toUtf8());
-		else
-			file.write(memo->GetHtml().toUtf8());
+		//if (suffx == "md")
+		//	file.write(memo->GetMarkdown().toUtf8());
+		//else
+		//	file.write(memo->GetHtml().toUtf8());
+
+		auto raw = memo->GetRawData();
+		if ((suffx == "md" || suffx=="markdown") && memo->GetMemoType() == kMemoHtml) {
+			QTextDocument doc;
+			doc.setHtml(raw);
+			raw = doc.toPlainText();
+		}
+		else if (suffx == "html" && memo->GetMemoType() == kMemoMarkdown) {
+			QTextDocument doc;
+			doc.setMarkdown(raw);
+			raw = doc.toHtml();
+		}
+		file.write(raw.toUtf8());
 		file.close();
 	}
 }
@@ -722,7 +769,7 @@ void LxMemo::initDB()
     )";
 	db_->Query(sql);
 
-	queryData(Path("/"));
+	queryData(Path(">"));
 }
 
 int onReadCycleMemo(void* lx, int rows, char** rowData, char** colNames)
@@ -758,21 +805,22 @@ void LxMemo::initRecycleMemo()
 MemoDialog* LxMemo::showMemo(SharedMemo memo)
 {
 	MemoDialog* dlg = new MemoDialog(this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
 	dlg->SetMemo(memo);
 
-	srand(time(nullptr));
-	auto TR = rect().topRight();
-	TR = mapToGlobal(TR);
+	//srand(time(nullptr));
+	//auto TR = rect().topRight();
+	//TR = mapToGlobal(TR);
 
-	TR.rx() += rand() % 200;
-	TR.ry() += rand() % 150;
-	dlg->move(TR);
+	//TR.rx() += rand() % 200;
+	//TR.ry() += rand() % 150;
+	//dlg->move(TR);
 	dlg->show();
 
 	connect(dlg, &MemoDialog::MemoUpdate, this, &LxMemo::onUpdateMemo, Qt::QueuedConnection);
 	connect(dlg, &MemoDialog::windowClosed, this, &LxMemo::onMemoClosed);
 
-	StartOpacityAnimation(dlg, 0, 0.95);
+	StartOpacityAnimation(dlg, 0, 1);
 
 	return dlg;
 }
@@ -825,14 +873,14 @@ void LxMemo::onMemoDisplay(const QPoint& pos, NoteWidget* nw)
 		if (isShow)
 			return;
 		auto memo = meta->converTo<Memo>();
-		if (memo->GetHtml().isEmpty()) {
+		if (memo->IsEmpty()) {
 			auto sql = QString("select DATA from Memo where ID=%1").arg(QString::number(memo->Id()));
 
 			auto result = db_->Query(sql.toStdString());
 			if (result) {
 				auto& row = result->Get(0);
-				QString html = QString::fromLocal8Bit(QByteArray::fromBase64(any2chars(row[0])));
-				memo->SetHtml(html);
+				QString data = QString::fromLocal8Bit(QByteArray::fromBase64(any2chars(row[0])));
+				memo->SetRawData(data);
 				opend_dialog_.insert(nw, showMemo(memo));
 			}
 		}

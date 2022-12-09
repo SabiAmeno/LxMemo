@@ -11,7 +11,7 @@ struct TextStyle
 {
 	QFont font_{ "Microsoft YaHei UI", 10 };
 	QColor color_{ Qt::black };
-	QColor bk_color_{ Qt::white };
+	QColor bk_color_{ Qt::transparent };
 	int border_style_{ 0 };
 
 	friend QDataStream& operator<<(QDataStream& out, const TextStyle& style);
@@ -45,7 +45,6 @@ private:
 	TextStyle text_style_{};
 
 	QTextEdit* edit_{ nullptr };
-	//    TextCursor* cursor_{nullptr};
 };
 
 #endif // TEXTGRAPH_H

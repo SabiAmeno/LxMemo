@@ -28,6 +28,7 @@ QStringList NameSplit(const QString& name, const QFontMetrics& metrics, int widt
         else {
             list.append(s);
             s.clear();
+            s += c;
             cur_width = 0;
         }
     }
@@ -39,7 +40,7 @@ QStringList NameSplit(const QString& name, const QFontMetrics& metrics, int widt
 
 void Folder::paint(QPainter& painter, const QRect& rect) const
 {
-    QPixmap pix(":/LxMemo/icons/folder_blue.png");
+    QPixmap pix(":/LxMemo/icons/folder.png");
     painter.drawPixmap(rect, pix.scaled(rect.size(), Qt::KeepAspectRatio));
 
     painter.save();
@@ -60,12 +61,12 @@ void Folder::paint(QPainter& painter, const QRect& rect) const
         y += 14;
     }
 
-    QPen pen;
+    /*QPen pen;
     pen.setColor(Qt::darkGreen);
     painter.setPen(pen);
     font.setPointSize(4);
     painter.setFont(font);
-    painter.drawText(rect.left() + 8, rect.bottom() - 6, time_);
+    painter.drawText(rect.left() + 8, rect.bottom() - 6, time_);*/
 
     painter.restore();
 }

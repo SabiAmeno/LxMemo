@@ -1,25 +1,17 @@
 #include "graphicgraph.h"
 #include "graphiccanvas.h"
 #include <QStandardPaths>
+#include <QFileDialog>
 
 GraphicGraph::GraphicGraph(GraphicCanvas *parent)
     : Graph(parent)
 {
     origin_pixmap_ = QPixmap(":/LxMemo/icons/picture.png");
     SetSize(QSize(60, 60));
-
-    file_dialog_ = new QFileDialog();
-    file_dialog_->setViewMode(QFileDialog::Detail);
-    file_dialog_->setFilter(QDir::Files);
-    file_dialog_->setNameFilter("JPEG(*.jpg,*.jpeg);PNG(*.png)");
-
-    connect(file_dialog_, &QFileDialog::fileSelected, this, &GraphicGraph::onPictureSelected);
 }
 
 GraphicGraph::~GraphicGraph()
 {
-    file_dialog_->close();
-    delete file_dialog_;
 }
 
 QString GraphicGraph::GraphicUrl()
@@ -52,7 +44,10 @@ void GraphicGraph::MouseClick(const QPoint &pos)
 
 void GraphicGraph::MouseDoubleClick(const QPoint &)
 {
-    file_dialog_->show();
+    auto file = QFileDialog::getOpenFileName(canvas_, tr("Select Image"), QString(), tr("PNG(*.png);;JPEG(*.jpg *.jpeg)"));
+    if (!file.isEmpty()) {
+        onPictureSelected(file);
+    }
 }
 
 void GraphicGraph::SerializeTo(QDataStream &stream)

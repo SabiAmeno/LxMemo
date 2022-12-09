@@ -37,18 +37,31 @@ void Memo::paint(QPainter& painter, const QRect& rect) const
 
     painter.drawPixmap(0, 0, QPixmap(":/LxMemo/icons/note.png").scaled(rect.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     //painter.drawPixmap(rect.topLeft(), QPixmap(":/LxMemo/icons/memo_file.png").scaled(16, 16));
-    painter.drawPixmap(rect.topRight() - QPoint(25, -5), QPixmap(":/LxMemo/icons/other.png"));
+    //painter.drawPixmap(rect.topRight() - QPoint(25, -5), QPixmap(":/LxMemo/icons/other.png"));
     
     QPainterPath path;
-    path.addEllipse(rect.topLeft() + QPoint(5, 5), 5, 5);
+    path.addEllipse(rect.topLeft() + QPoint(6, 12), 4, 4);
     painter.fillPath(path, color_);
 
-    if (snapshot_.isEmpty()) {
-        painter.setPen(Qt::darkGray);
-        QString tips = "NEW MEMO";
-
-        painter.drawText(dst.center()-QPoint(painter.fontMetrics().width(tips) / 2, 0), tips);
+    //if (snapshot_.isEmpty()) {
+        //painter.setPen(Qt::darkGray);
+        //QString tips = "MEMO";
+    QPixmap icon;
+    switch (memo_type_)
+    {
+    case kMemoText:
+        icon.load(":/LxMemo/icons/text.png");
+        break;
+    case kMemoHtml:
+        icon.load(":/LxMemo/icons/html.png");
+        break;
+    case kMemoMarkdown:
+        icon.load(":/LxMemo/icons/markdown.png");
+        break;
     }
+    icon = icon.scaled(32, 32);
+    painter.drawPixmap(dst.center()-QPoint(icon.width() / 2, icon.height() / 2), icon);
+    /*}
     else {
         int lineHight = YaHeiFontHeight();
 
@@ -65,7 +78,7 @@ void Memo::paint(QPainter& painter, const QRect& rect) const
         painter.setFont(font);
         painter.setPen(Qt::darkGreen);
         painter.drawText(dst.left() + 8, dst.bottom() - 6, time_);
-    }
+    }*/
 
     painter.restore();
 }
@@ -75,38 +88,63 @@ size_t Memo::type()
     return typeid(Memo).hash_code();
 }
 
-void Memo::SetHtml(const QString& html)
+bool Memo::IsEmpty()
 {
-    html_ = html;
-    auto doc = QTextDocumentFragment::fromHtml(html_);
-    auto raw = doc.toPlainText();
-
-    snapshot_.clear();
-
-    int count = 0;
-    int ind = 0;
-
-    do
-    {
-        ind = raw.indexOf('\n', 0);
-        if (ind == -1) {
-            if (!raw.isEmpty())
-                snapshot_ << raw;
-
-            break;
-        }
-
-        count++;
-        snapshot_ << (raw.left(ind));
-        raw = raw.right(raw.length() - ind - 1);
-    } while (count < 5 && ind != -1);
+    return raw_.isEmpty();
 }
 
-QString Memo::GetMarkdown() const
-{
-    auto doc = QTextDocumentFragment::fromHtml(html_);
+//void Memo::SetHtml(const QString& html)
+//{
+//    html_ = html;
+//    auto doc = QTextDocumentFragment::fromHtml(html_);
+//    auto raw = doc.toPlainText();
+//
+//    snapshot_.clear();
+//
+//    int count = 0;
+//    int ind = 0;
+//
+//    do
+//    {
+//        ind = raw.indexOf('\n', 0);
+//        if (ind == -1) {
+//            if (!raw.isEmpty())
+//                snapshot_ << raw;
+//
+//            break;
+//        }
+//
+//        count++;
+//        snapshot_ << (raw.left(ind));
+//        raw = raw.right(raw.length() - ind - 1);
+//    } while (count < 5 && ind != -1);
+//}
 
-    return doc.toPlainText();
+void Memo::SetRawData(const QString& raw)
+{
+    raw_ = raw;
+}
+
+QString Memo::GetRawData()
+{
+    return raw_;
+}
+
+//QString Memo::GetMarkdown() const
+//{
+//    auto doc = QTextDocumentFragment::fromHtml(html_);
+//
+//    return doc.toPlainText();
+//}
+
+void Memo::SetMemoType(MemoType type)
+{
+    memo_type_ = type;
+}
+
+MemoType Memo::GetMemoType()
+{
+    return memo_type_;
 }
 
 void Memo::SetSnapshot(const QString& snapshot)
