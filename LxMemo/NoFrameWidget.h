@@ -12,7 +12,7 @@ public:
     ~NoFrameWidget();
 
     void SetOpacity(qreal op);
-    void SetPureStyle(const QString& color);
+    void SetPureStyle(const QColor& color);
 protected:
     //virtual bool eventFilter(QObject* w, QEvent* e) override;
     virtual void paintEvent(QPaintEvent* event) override;

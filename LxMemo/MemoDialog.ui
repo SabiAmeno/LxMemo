@@ -17,29 +17,19 @@
    <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>9</number>
+   <property name="horizontalSpacing">
+    <number>2</number>
    </property>
-   <property name="topMargin">
-    <number>9</number>
+   <property name="verticalSpacing">
+    <number>3</number>
    </property>
-   <property name="rightMargin">
-    <number>9</number>
-   </property>
-   <property name="bottomMargin">
-    <number>9</number>
-   </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
     <widget class="TitleBar" name="widget" native="true"/>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="1">
     <widget class="QTextEdit" name="textEdit">
      <property name="font">
       <font>
-       <family>Consolas</family>
        <pointsize>10</pointsize>
        <stylestrategy>PreferAntialias</stylestrategy>
       </font>
@@ -76,6 +66,46 @@
      </property>
      <property name="tabStopWidth" stdset="0">
       <number>20</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QTextEdit" name="count_edit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
     </widget>
    </item>

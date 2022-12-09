@@ -67,6 +67,7 @@
         <file>icons/html.png</file>
         <file>icons/markdown.png</file>
         <file>icons/text.png</file>
+        <file>icons/palette.png</file>
     </qresource>
     <qresource prefix="/texture">
         <file>icons/texture/green.jpg</file>

@@ -7,6 +7,7 @@
 #include <QClipBoard>
 #include <QMimeData>
 #include <QImageReader>
+#include <QScrollBar>
 #include <QMenu>
 #include "LxMemo.h"
 #include "db.h"
@@ -53,7 +54,7 @@ MemoDialog::MemoDialog(LxMemo* parent)
 	connect(ui.widget, &TitleBar::minimumButtonClicked, this, [this] {showMinimized(); });
 	connect(ui.widget, &TitleBar::positionChanged, this, [this](const QPoint& diff) {move(pos() + diff); });
 
-	//connect(ui.textEdit->document(), &QTextDocument::contentsChanged, this, &MemoDialog::onMemoSave);
+	connect(ui.textEdit->document(), &QTextDocument::contentsChanged, this, &MemoDialog::updateLines);
 	connect(&save_timer_, &QTimer::timeout, this, &MemoDialog::onMemoSave);
 
 	size_selector_dialog_ = new LucencyDialog(this);
@@ -66,6 +67,8 @@ MemoDialog::MemoDialog(LxMemo* parent)
 	size_selector_dialog_->hide();
 
 	connect(size_selector_, &SizeSelector::SelectFinished, this, &MemoDialog::onImageSelected);
+	connect(ui.textEdit->verticalScrollBar(), &QScrollBar::valueChanged, ui.count_edit->verticalScrollBar(), &QScrollBar::setValue);
+	connect(ui.count_edit->verticalScrollBar(), &QScrollBar::valueChanged, ui.textEdit->verticalScrollBar(), &QScrollBar::setValue);
 
 	init();
 
@@ -88,6 +91,8 @@ void MemoDialog::SetMemo(SharedMemo memo)
 		ui.textEdit->setHtml(memo_->GetRawData());
 	else
 		ui.textEdit->setPlainText(memo_->GetRawData());
+
+	updateLines();
 }
 
 uint32_t MemoDialog::MemoId()
@@ -166,6 +171,29 @@ void MemoDialog::keyPressEvent(QKeyEvent* e)
 	return NoFrameWidget::keyPressEvent(e);
 }
 
+
+void MemoDialog::updateLines()
+{
+	ui.count_edit->clear();
+	auto count = ui.textEdit->document()->lineCount();
+	QString count_string;
+	for (int i = 0; i < count; i++)
+		count_string += QString::number(i + 1) + "\n";
+	ui.count_edit->setPlainText(count_string);
+}
+
+void MemoDialog::zoom(bool zoom_in)
+{
+	if (zoom_in) {
+		ui.textEdit->zoomIn(2);
+		ui.count_edit->zoomIn(2);
+	} else {
+		ui.textEdit->zoomOut(2);
+		ui.count_edit->zoomOut(2);
+	}
+}
+
+
 bool MemoDialog::eventFilter(QObject* watch, QEvent* event)
 {
 	switch (event->type())
@@ -180,17 +208,11 @@ bool MemoDialog::eventFilter(QObject* watch, QEvent* event)
 
 			if (Qt::ControlModifier == ctrl) {
 				if (!numPixels.isNull()) {
-					if (numPixels.y() > 0)
-						ui.textEdit->zoomIn(2);
-					else
-						ui.textEdit->zoomOut(2);
+					zoom(numPixels.y() > 0);
 				}
 				else if (!numDegrees.isNull()) {
 					QPoint numSteps = numDegrees / 15 * 40;
-					if (numSteps.y() > 0)
-						ui.textEdit->zoomIn(2);
-					else
-						ui.textEdit->zoomOut(2);
+					zoom(numSteps.y() > 0);
 				}
 			}
 		    break;

@@ -127,7 +127,7 @@ LxMemo::LxMemo(QWidget* parent)
 				auto memo = meta->converTo<Memo>();
 				auto dlg = opend_dialog_.value(current_item_);
 				dlg->SetMemo(memo);
-				dlg->SetPureStyle(color.name(QColor::HexArgb));
+				dlg->SetPureStyle(color);
 				dlg->repaint();
 			}
 			repaint();
@@ -196,7 +196,7 @@ void LxMemo::addMemo(SharedMemo memo)
 
 	auto time = QDateTime::currentDateTime().toString();
 
-	QString memo_type;
+	std::string memo_type;
 	switch (memo->GetMemoType())
 	{
 	case kMemoHtml:
@@ -211,7 +211,7 @@ void LxMemo::addMemo(SharedMemo memo)
 	sprintf(buffer,
 		R"(insert into Memo (ID, PROP, IN_RECYCLE, TIME, PPATH, TYPE) values(%u, "%s", 0, "%s", "%s", "FILE:%s");)",
 		memo->Id(), memo->PropertyToStream().data(), time.toLocal8Bit().data(), path_.path().toLocal8Bit().data(),
-		memo_type);
+		memo_type.c_str());
 
 	//ExecSQL(db_, buffer);
 	db_->Query(buffer);
@@ -686,8 +686,10 @@ void LxMemo::onReadDataFromDB(const Row& row)
 		if (type_list.size() >= 2) {
 			if (type_list[1] == "HTML")
 				memo->SetMemoType(kMemoHtml);
-			else
+			else if (type_list[1] == "MARKDOWN")
 				memo->SetMemoType(kMemoMarkdown);
+			else
+				memo->SetMemoType(kMemoText);
 		}
 
 		auto note = ui.note_wall->AddNote();

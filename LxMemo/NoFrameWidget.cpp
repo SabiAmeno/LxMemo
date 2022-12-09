@@ -18,7 +18,7 @@ NoFrameWidget::NoFrameWidget(QWidget* parent) :
 	QWidget(parent)
 {
 	ui.setupUi(this);
-	setAutoFillBackground(true);
+	//setAutoFillBackground(true);
 	setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
 
 	//
@@ -55,7 +55,10 @@ void NoFrameWidget::paintEvent(QPaintEvent* event)
 	path.addRoundedRect(shadeWidth, shadeWidth, this->width() - 2 * shadeWidth, this->height() - 2 * shadeWidth, 2, 2);
 	//painter.fillRect(QRect(shadeWidth, shadeWidth, this->width() - 2 * shadeWidth, this->height() - 2 * shadeWidth), QBrush(Qt::white));
 	//painter.fillRect(QRect(0, 0, this->width(), this->height()), QBrush(Qt::white));
-	painter.fillPath(path, Qt::white);
+	//painter.fillPath(path, Qt::white);
+
+	auto pal = palette();
+	painter.fillPath(path, pal.brush(QPalette::Window));
 
 	QColor color(38, 78, 119, 100);
 	for (int i = 1; i < shadeWidth; i++)
@@ -136,12 +139,15 @@ void NoFrameWidget::showEvent(QShowEvent* event)
 	QWidget::showEvent(event);
 }
 
-void NoFrameWidget::SetPureStyle(const QString& color)
+void NoFrameWidget::SetPureStyle(const QColor& color)
 {
 	//setStyleSheet(0);
-	auto style = tr("background-color: %1;").arg(color);
-	setStyleSheet(style);
-	repaint();
+	auto pal = palette();
+	pal.setBrush(QPalette::Window, color);
+	setPalette(pal);
+	//auto style = tr(".NoFrameWidget{background-color: %1;}").arg(color);
+	//setStyleSheet(style);
+	update();
 	//ui->widget->setStyleSheet(tr("background-color: %1;").arg(color));
 	//ui->widget->setStyleSheet("background-color:white;");
 	//setStyleSheet(tr("QFrame#frame{border: 1px solid %1;background-color: %2;}").arg(color, color));

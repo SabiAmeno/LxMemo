@@ -63,11 +63,14 @@ private slots:
 	void onTextColorDown(bool);
 
 	void onMemoSave();
+	void updateLines();
+
 private:
 	void init();
 	void changeProp(auto cb);
 	void save();
 	void saveInThread();
+	void zoom(bool zoom_in);
 private:
 	Ui::MemoDialogClass ui;
 
